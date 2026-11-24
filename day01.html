@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f7f5">
+<title>DAY 01 · 인사와 자기소개</title>
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --paper: #ffffff;
+    --ink: #1a1a1a;
+    --muted: #5c5c5c;
+    --line: #e4e4e1;
+    --accent: #2563eb;
+    --accent-soft: #eff6ff;
+    --green: #16a34a;
+    --warn: #b45309;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 18px/1.55 -apple-system, BlinkMacSystemFont, "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+  }
+  .wrap {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 16px 14px 48px;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { font-weight: 700; font-size: 14px; }
+  .brand a { color: var(--muted); text-decoration: none; font-weight: 500; }
+  .badge {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 5px 11px;
+    border-radius: 999px;
+  }
+  h1 {
+    font-size: 26px;
+    margin: 0 0 4px;
+    letter-spacing: -0.03em;
+  }
+  .sub {
+    color: var(--muted);
+    font-size: 14.5px;
+    margin: 0 0 16px;
+  }
+
+  .block {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 15px;
+    margin-bottom: 11px;
+  }
+  .block-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.03em;
+    margin: 0 0 8px;
+  }
+  p { margin: 0 0 8px; }
+  p:last-child { margin-bottom: 0; }
+  .muted { color: var(--muted); font-size: 15px; }
+
+
+  ruby {
+    ruby-align: center;
+  }
+  ruby rt {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .jp {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .reading {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 2px;
+    font-weight: 500;
+  }
+  .meaning {
+    font-size: 15px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .example {
+    font-size: 14.5px;
+    color: #333;
+    margin-top: 3px;
+  }
+
+
+  .item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .item:last-child { border-bottom: 0; padding-bottom: 0; }
+  .item:first-child { padding-top: 0; }
+
+  button {
+    font: inherit;
+    border: 0;
+    border-radius: 7px;
+    padding: 5px 10px;
+    background: var(--accent);
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  button.ghost {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid #bfdbfe;
+  }
+  .forvo-note {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin: 0 0 10px;
+    line-height: 1.45;
+  }
+  .forvo-note a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .forvo-note a:hover { text-decoration: underline; }
+
+  .pattern {
+    background: var(--accent-soft);
+    border-radius: 8px;
+    padding: 12px 13px;
+    margin: 10px 0;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  .pattern strong { color: var(--accent); }
+
+  .note {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 11px 13px;
+    font-size: 15px;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+  .note strong { color: var(--warn); }
+
+  .dialogue {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .turn {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    gap: 10px;
+    align-items: start;
+  }
+  .speaker {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 6px 0;
+    text-align: center;
+  }
+
+  .practice {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 12px 13px;
+    margin-top: 8px;
+  }
+  .practice-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 5px;
+  }
+
+  .quiz-q {
+    padding: 11px 0;
+    border-top: 1px solid var(--line);
+  }
+  .quiz-q:first-of-type { border-top: 0; padding-top: 0; }
+  .quiz-q p { font-weight: 700; margin: 0 0 7px; font-size: 15.5px; }
+  .opt {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 3px 0;
+    font-size: 15px;
+  }
+  .opt input { margin-top: 4px; accent-color: var(--accent); }
+  #result {
+    margin-top: 12px;
+    font-weight: 700;
+    min-height: 22px;
+    font-size: 15px;
+  }
+
+  .hw {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .hw-item {
+    background: #f4f4f2;
+    border-radius: 8px;
+    padding: 11px 13px;
+    font-size: 15px;
+  }
+  .hw-item b { display: block; margin-bottom: 2px; }
+
+  .footer {
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand"><a href="index.html">← 로드맵</a></div>
+    <div class="badge">DAY 01</div>
+  </div>
+
+  <h1>인사와 자기소개</h1>
+  <p class="sub">대학 어학당 초급 1일차 · 단어·문법 강화 · 40~55분</p>
+
+  <!-- 목표 -->
+  <div class="block">
+    <div class="block-title">오늘 목표</div>
+    <div class="pattern" style="margin:0;">
+      ① 인사 표현을 상황에 맞게 정확히 말한다<br>
+      ② 「〜は〜です」 구조로 문장을 직접 만든다<br>
+      ③ 이름·국적·신분으로 자기소개를 완성한다
+    </div>
+  </div>
+
+  <!-- 1. 인사 단어 -->
+  <div class="block">
+    <div class="block-title">1. 단어 · 인사</div>
+    <p class="forvo-note">발음 확인이 필요하면 <a href="https://forvo.com/languages/ja/" target="_blank" rel="noopener">Forvo</a>에서 단어로 검색하세요. (실제 일본인 녹음)</p>
+
+    <div class="item">
+      <div>
+        <div class="jp">おはようございます</div>
+        <div class="meaning">안녕하세요 (아침 · 정중)</div>
+        <div class="example">선생님이나 윗사람에게 아침 인사할 때 사용</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('おはようございます')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp">こんにちは</div>
+        <div class="meaning">안녕하세요 (낮)</div>
+        <div class="example">가장 많이 쓰는 기본 인사</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('こんにちは')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp">こんばんは</div>
+        <div class="meaning">안녕하세요 (저녁/밤)</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('こんばんは')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp">はじめまして</div>
+        <div class="meaning">처음 뵙겠습니다</div>
+        <div class="example">정말 처음 만난 사람에게만 사용. 두 번째부터는 안 씀</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('はじめまして')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp">よろしくお願いします</div>
+        <div class="reading">[よろしくおねがいします]</div>
+        <div class="meaning">잘 부탁드립니다</div>
+        <div class="example">자기소개 끝, 부탁할 때, 앞으로 잘 지내자는 의미로 자주 사용</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('よろしく おねがいします')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp">すみません</div>
+        <div class="meaning">죄송합니다 / 여기요 (부를 때)</div>
+        <div class="example">사과할 때와 사람을 부를 때 둘 다 사용</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('すみません')">▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 사람/신분 단어 -->
+  <div class="block">
+    <div class="block-title">2. 단어 · 사람과 신분</div>
+    <p class="muted" style="margin-bottom:10px;">자기소개에서 핵심이 되는 단어입니다. 읽는 법을 통째로 익히세요. 발음은 위 Forvo를 활용하세요.</p>
+
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>私<rt>わたし</rt></ruby></div>
+        <div class="reading">[わたし]</div>
+        <div class="meaning">나 / 저</div>
+        <div class="example">초보 단계에서 가장 기본이 되는 1인칭. 공손한 느낌</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('わたし')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>名<rt>な</rt></ruby><ruby>前<rt>まえ</rt></ruby></div>
+        <div class="reading">[なまえ]</div>
+        <div class="meaning">이름</div>
+        <div class="example">名前は何ですか。 → 이름이 뭐예요?</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('なまえ')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>学<rt>がく</rt></ruby><ruby>生<rt>せい</rt></ruby></div>
+        <div class="reading">[がくせい]</div>
+        <div class="meaning">학생</div>
+        <div class="example">「学」은 이 단어에서 「がく」로 읽음</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('がくせい')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>先<rt>せん</rt></ruby><ruby>生<rt>せい</rt></ruby></div>
+        <div class="reading">[せんせい]</div>
+        <div class="meaning">선생님</div>
+        <div class="example">직업으로도 쓰고, 선생님을 부를 때도 「先生」이라고 함</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('せんせい')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>会<rt>かい</rt></ruby><ruby>社<rt>しゃ</rt></ruby><ruby>員<rt>いん</rt></ruby></div>
+        <div class="reading">[かいしゃいん]</div>
+        <div class="meaning">회사원</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('かいしゃいん')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>韓<rt>かん</rt></ruby><ruby>国<rt>こく</rt></ruby></div>
+        <div class="reading">[かんこく]</div>
+        <div class="meaning">한국</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('かんこく')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>日<rt>に</rt></ruby><ruby>本<rt>ほん</rt></ruby></div>
+        <div class="reading">[にほん]</div>
+        <div class="meaning">일본</div>
+        <div class="example">「本」은 여기서 「ほん」으로 읽음</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('にほん')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>韓<rt>かん</rt></ruby><ruby>国<rt>こく</rt></ruby><ruby>人<rt>じん</rt></ruby></div>
+        <div class="reading">[かんこくじん]</div>
+        <div class="meaning">한국인</div>
+        <div class="example">국적에 붙는 「人」은 「じん」으로 읽음</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('かんこくじん')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>日<rt>に</rt></ruby><ruby>本<rt>ほん</rt></ruby><ruby>人<rt>じん</rt></ruby></div>
+        <div class="reading">[にほんじん]</div>
+        <div class="meaning">일본인</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('にほんじん')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>何<rt>なに</rt></ruby></div>
+        <div class="reading">[なに / なん]</div>
+        <div class="meaning">무엇</div>
+        <div class="example">何ですか → 뭐예요? / お名前は何ですか → 성함이 어떻게 되세요?</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('なに')">▶</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>人<rt>ひと</rt></ruby></div>
+        <div class="reading">[ひと]</div>
+        <div class="meaning">사람</div>
+        <div class="example">単独으로 쓸 때는 「ひと」, 국적 뒤에 붙을 때는 「じん」</div>
+      </div>
+      <div style="text-align:right;">
+        <button onclick="say('ひと')">▶</button>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>읽는 법 중요 포인트</strong><br>
+      일본어 한자는 단어마다 읽는 법이 다릅니다.<br>
+      초보 단계에서는 “이 단어는 이렇게 읽는다”고 <b>통째로</b> 외우는 것이 가장 빠릅니다.<br>
+      音読み / 訓読み 규칙은 나중에 조금씩 정리합니다.
+    </div>
+  </div>
+
+  <!-- 3. 문법 -->
+  <div class="block">
+    <div class="block-title">3. 문법 · 「〜は〜です」</div>
+
+    <p>오늘 가장 중요한 문장 구조입니다. 어학당 초급에서 제일 먼저 다루는 패턴이에요.</p>
+
+    <div class="pattern">
+      <strong>기본 구조</strong><br>
+      A <span style="color:var(--accent)">は</span> B です。<br>
+      “A는/은 B입니다.”
+    </div>
+
+    <p style="margin-top:10px;"><strong>「は」</strong> → 글자는 ‘하’이지만, 조사로 쓰일 때는 반드시 <strong>「와」</strong>라고 읽습니다.</p>
+    <p><strong>「です」</strong> → 문장을 정중하게 끝내는 말 (입니다 / 예요)</p>
+
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>私<rt>わたし</rt></ruby>は<ruby>学生<rt>がくせい</rt></ruby>です。</div>
+        <div class="reading">[わたしは がくせいです]</div>
+        <div class="meaning">저는 학생입니다.</div>
+      </div>
+      <button onclick="say('わたしは がくせいです')">▶</button>
+    </div>
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>私<rt>わたし</rt></ruby>は<ruby>韓国人<rt>かんこくじん</rt></ruby>です。</div>
+        <div class="reading">[わたしは かんこくじんです]</div>
+        <div class="meaning">저는 한국인입니다.</div>
+      </div>
+      <button onclick="say('わたしは かんこくじんです')">▶</button>
+    </div>
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>私<rt>わたし</rt></ruby>はキムです。</div>
+        <div class="reading">[わたしは キムです]</div>
+        <div class="meaning">저는 킴입니다.</div>
+      </div>
+      <button onclick="say('わたしは キムです')">▶</button>
+    </div>
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>名前<rt>なまえ</rt></ruby>は<ruby>何<rt>なん</rt></ruby>ですか。</div>
+        <div class="reading">[なまえは なんですか]</div>
+        <div class="meaning">이름이 뭐예요?</div>
+      </div>
+      <button onclick="say('なまえは なんですか')">▶</button>
+    </div>
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>先生<rt>せんせい</rt></ruby>は<ruby>日本人<rt>にほんじん</rt></ruby>です。</div>
+        <div class="reading">[せんせいは にほんじんです]</div>
+        <div class="meaning">선생님은 일본인입니다.</div>
+      </div>
+      <button onclick="say('せんせいは にほんじんです')">▶</button>
+    </div>
+    <div class="item">
+      <div>
+        <div class="jp"><ruby>田中<rt>たなか</rt></ruby>さんは<ruby>会社員<rt>かいしゃいん</rt></ruby>です。</div>
+        <div class="reading">[たなかさんは かいしゃいんです]</div>
+        <div class="meaning">다나카 씨는 회사원입니다.</div>
+      </div>
+      <button onclick="say('たなかさんは かいしゃいんです')">▶</button>
+    </div>
+
+    <div class="note">
+      <strong>「は」와 「が」</strong><br>
+      둘은 나중에 자세히 비교합니다.<br>
+      지금은 “문장의 주제(화제)를 나타낼 때 「は」를 쓴다” 정도만 기억하세요.
+    </div>
+  </div>
+
+  <!-- 4. 회화 -->
+  <div class="block">
+    <div class="block-title">4. 회화 연습</div>
+    <p class="muted" style="margin-bottom:10px;">배운 단어와 문법을 바로 사용하는 대화입니다. 따라 말한 뒤 본인 정보로 바꿔보세요.</p>
+
+    <div class="dialogue">
+      <div class="turn">
+        <div class="speaker">A</div>
+        <div>
+          <div class="jp" style="font-size: 20px;">こんにちは。</div>
+          <div class="meaning">안녕하세요.</div>
+        </div>
+        <button onclick="say('こんにちは')">▶</button>
+      </div>
+      <div class="turn">
+        <div class="speaker">B</div>
+        <div>
+          <div class="jp" style="font-size: 20px;">こんにちは。はじめまして。</div>
+          <div class="meaning">안녕하세요. 처음 뵙겠습니다.</div>
+        </div>
+        <button onclick="say('こんにちは。はじめまして')">▶</button>
+      </div>
+      <div class="turn">
+        <div class="speaker">A</div>
+        <div>
+          <div class="jp" style="font-size: 20px;"><ruby>私<rt>わたし</rt></ruby>はキムです。<ruby>韓国人<rt>かんこくじん</rt></ruby>です。<ruby>学生<rt>がくせい</rt></ruby>です。</div>
+          <div class="reading">[わたしは キムです。かんこくじんです。がくせいです]</div>
+          <div class="meaning">저는 킴입니다. 한국인입니다. 학생입니다.</div>
+        </div>
+        <button onclick="say('わたしは キムです。かんこくじんです。がくせいです')">▶</button>
+      </div>
+      <div class="turn">
+        <div class="speaker">B</div>
+        <div>
+          <div class="jp" style="font-size: 20px;"><ruby>私<rt>わたし</rt></ruby>は<ruby>田中<rt>たなか</rt></ruby>です。<ruby>日本人<rt>にほんじん</rt></ruby>です。<ruby>先生<rt>せんせい</rt></ruby>です。</div>
+          <div class="reading">[わたしは たなかです。にほんじんです。せんせいです]</div>
+          <div class="meaning">저는 다나카입니다. 일본인입니다. 선생님입니다.</div>
+        </div>
+        <button onclick="say('わたしは たなかです。にほんじんです。せんせいです')">▶</button>
+      </div>
+      <div class="turn">
+        <div class="speaker">A</div>
+        <div>
+          <div class="jp" style="font-size: 20px;">よろしくお願いします。</div>
+          <div class="meaning">잘 부탁드립니다.</div>
+        </div>
+        <button onclick="say('よろしく おねがいします')">▶</button>
+      </div>
+      <div class="turn">
+        <div class="speaker">B</div>
+        <div>
+          <div class="jp" style="font-size: 20px;">よろしくお願いします。</div>
+          <div class="meaning">잘 부탁드립니다.</div>
+        </div>
+        <button onclick="say('よろしく おねがいします')">▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 연습 -->
+  <div class="block">
+    <div class="block-title">5. 직접 만들어 보기</div>
+
+    <div class="practice">
+      <div class="practice-label">연습 1 · 기본 문장</div>
+      <div class="jp" style="font-size: 20px;"><ruby>私<rt>わたし</rt></ruby>は （　　）です。</div>
+      <div class="reading">[わたしは 〜 です]</div>
+      <div class="meaning">이름 / 국적 / 신분을 넣어서 최소 3문장 말하기</div>
+    </div>
+
+    <div class="practice" style="margin-top:8px;">
+      <div class="practice-label">연습 2 · 질문과 대답</div>
+      <div class="jp" style="font-size: 20px;"><ruby>名前<rt>なまえ</rt></ruby>は<ruby>何<rt>なん</rt></ruby>ですか。 → <ruby>私<rt>わたし</rt></ruby>は （　　）です。</div>
+      <div class="reading">[なまえは なんですか → わたしは 〜 です]</div>
+    </div>
+
+    <div class="practice" style="margin-top:8px;">
+      <div class="practice-label">연습 3 · 전체 자기소개</div>
+      <div class="jp" style="font-size: 18px;"><ruby>私<rt>わたし</rt></ruby>は 〜 です。〜<ruby>人<rt>じん</rt></ruby>です。〜です。よろしくお願いします。</div>
+      <div class="reading">[わたしは 〜 です。〜じんです。〜です。よろしくおねがいします]</div>
+    </div>
+  </div>
+
+  <!-- 6. 퀴즈 -->
+  <div class="block">
+    <div class="block-title">6. 확인 문제</div>
+    <form id="quizform">
+      <div class="quiz-q">
+        <p>1. 조사 「は」의 발음은?</p>
+        <label class="opt"><input type="radio" name="q1" value="a"> 하</label>
+        <label class="opt"><input type="radio" name="q1" value="b"> 와</label>
+        <label class="opt"><input type="radio" name="q1" value="c"> 바</label>
+      </div>
+      <div class="quiz-q">
+        <p>2. 「私は学生です」의 뜻은?</p>
+        <label class="opt"><input type="radio" name="q2" value="a"> 저는 선생님입니다</label>
+        <label class="opt"><input type="radio" name="q2" value="b"> 저는 학생입니다</label>
+        <label class="opt"><input type="radio" name="q2" value="c"> 학생은 저입니다</label>
+      </div>
+      <div class="quiz-q">
+        <p>3. 「韓国人」의 올바른 읽기는?</p>
+        <label class="opt"><input type="radio" name="q3" value="a"> かんこくにん</label>
+        <label class="opt"><input type="radio" name="q3" value="b"> かんこくじん</label>
+        <label class="opt"><input type="radio" name="q3" value="c"> かんこくひと</label>
+      </div>
+      <div class="quiz-q">
+        <p>4. 처음 만났을 때 쓰는 표현은?</p>
+        <label class="opt"><input type="radio" name="q4" value="a"> こんにちは</label>
+        <label class="opt"><input type="radio" name="q4" value="b"> はじめまして</label>
+        <label class="opt"><input type="radio" name="q4" value="c"> おはようございます</label>
+      </div>
+      <div class="quiz-q">
+        <p>5. 「名前は何ですか」의 뜻은?</p>
+        <label class="opt"><input type="radio" name="q5" value="a"> 당신은 누구입니까</label>
+        <label class="opt"><input type="radio" name="q5" value="b"> 이름이 뭐예요?</label>
+        <label class="opt"><input type="radio" name="q5" value="c"> 어디에 살아요?</label>
+      </div>
+      <div class="quiz-q">
+        <p>6. 「人」을 국적 뒤에 붙일 때 읽는 법은?</p>
+        <label class="opt"><input type="radio" name="q6" value="a"> ひと</label>
+        <label class="opt"><input type="radio" name="q6" value="b"> じん</label>
+        <label class="opt"><input type="radio" name="q6" value="c"> にん</label>
+      </div>
+      <div class="controls">
+        <button type="button" onclick="grade()">채점하기</button>
+        <button type="reset" class="ghost" onclick="document.getElementById('result').textContent=''">다시 풀기</button>
+      </div>
+      <div id="result"></div>
+    </form>
+  </div>
+
+  <!-- 7. 숙제 -->
+  <div class="block">
+    <div class="block-title">7. 오늘 숙제</div>
+    <div class="hw">
+      <div class="hw-item">
+        <b>① 단어</b>
+        오늘 나온 단어 전체를 Forvo로 듣고, 히라가나 + 뜻을 보면서 각 3회 읽기
+      </div>
+      <div class="hw-item">
+        <b>② 문법</b>
+        「私は〜です」로 이름·국적·신분 문장을 각각 만들고 소리 내어 말하기
+      </div>
+      <div class="hw-item">
+        <b>③ 회화</b>
+        회화 부분을 보지 않고 처음부터 끝까지 한 번 말해보기
+      </div>
+      <div class="hw-item">
+        <b>④ 복습</b>
+        내일 공부 전에 오늘 단어 중 모르는 것이 있는지 다시 확인하기
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    TTS는 기계 음성입니다. 중요한 단어는 Forvo로 실제 일본인 발음을 확인하세요.<br>
+    한자 읽는 법은 단어 단위로 통째로 익히는 것이 초보 단계에서 가장 효율적입니다.
+  </div>
+
+</div>
+
+<script>
+let jaVoice = null;
+
+function say(text, rate = 0.88) {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP';
+  const vs = speechSynthesis.getVoices();
+  jaVoice = vs.find(v => /^ja(-|_)/i.test(v.lang)) || jaVoice;
+  if (jaVoice) u.voice = jaVoice;
+  u.rate = rate;
+  speechSynthesis.speak(u);
+}
+
+function grade() {
+  const key = { q1: 'b', q2: 'b', q3: 'b', q4: 'b', q5: 'b', q6: 'b' };
+  let score = 0, answered = 0;
+  for (let k in key) {
+    const v = document.querySelector('input[name="' + k + '"]:checked');
+    if (v) {
+      answered++;
+      if (v.value === key[k]) score++;
+    }
+  }
+  const r = document.getElementById('result');
+  if (answered < 6) {
+    r.style.color = '#2563eb';
+    r.textContent = '아직 ' + (6 - answered) + '문제가 남았습니다.';
+  } else {
+    r.style.color = score === 6 ? '#16a34a' : '#2563eb';
+    r.textContent = '결과: ' + score + ' / 6점' + (score === 6 ? ' · 전부 맞았습니다!' : ' · 틀린 부분을 다시 확인해보세요.');
+  }
+}
+
+if ('speechSynthesis' in window) {
+  speechSynthesis.onvoiceschanged = () => {
+    const vs = speechSynthesis.getVoices();
+    jaVoice = vs.find(v => /^ja(-|_)/i.test(v.lang)) || null;
+  };
+}
+</script>
+
+<div class="progress-control" style="margin:18px 0 0;padding:14px;background:#fff;border:1px solid #e4e4e1;border-radius:12px;text-align:center">
+  <button id="completeLesson" type="button" style="padding:9px 14px;background:#2563eb;color:#fff;border:0;border-radius:7px;font-weight:700">이 수업을 완료로 표시</button>
+  <p id="completeMessage" style="font-size:13px;color:#5c5c5c;margin:8px 0 0">완료 버튼을 누르면 홈페이지 로드맵의 학습 기록에 반영됩니다.</p>
+</div>
+<script>
+(function(){
+  const day=1,key='japanese-study-completed-days';
+  let completed=[];try{completed=JSON.parse(localStorage.getItem(key)||'[1]');}catch(e){completed=[1];}
+  if(!Array.isArray(completed))completed=[1];
+  const button=document.getElementById('completeLesson'),message=document.getElementById('completeMessage');
+  const paint=()=>{const done=completed.includes(day);button.textContent=done?'완료 표시됨 · 다시 학습하기':'이 수업을 완료로 표시';button.style.background=done?'#16834a':'#2563eb';message.textContent=done?'완료 기록이 이 기기에 저장되어 있습니다.':'완료 버튼을 누르면 홈페이지 로드맵의 학습 기록에 반영됩니다.';};
+  button.addEventListener('click',()=>{if(!completed.includes(day))completed.push(day);localStorage.setItem(key,JSON.stringify(completed));paint();});
+  paint();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f7f5">
+<title>DAY 02 · 숫자와 나이</title>
+<style>
+:root{--bg:#f7f7f5;--paper:#fff;--ink:#1a1a1a;--muted:#5c5c5c;--line:#e4e4e1;--accent:#2563eb;--accent-soft:#eff6ff;--green:#16a34a;--warn:#b45309}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 -apple-system,BlinkMacSystemFont,"Noto Sans KR","Apple SD Gothic Neo",sans-serif}
+.wrap{max-width:740px;margin:0 auto;padding:16px 14px 48px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.brand{font-weight:700;font-size:14px}.brand a{color:var(--muted);text-decoration:none;font-weight:500}
+.badge{font-size:13px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:5px 11px;border-radius:999px}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.03em}.sub{color:var(--muted);font-size:14.5px;margin:0 0 16px}
+.block{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 15px;margin-bottom:11px}
+.block-title{font-size:16px;font-weight:700;color:var(--accent);letter-spacing:.03em;margin:0 0 8px}
+p{margin:0 0 8px}p:last-child{margin-bottom:0}.muted{color:var(--muted);font-size:15px}
+ruby{ruby-align:center}ruby rt{font-size:12px;color:var(--muted);font-weight:500}
+.jp{font-size:22px;font-weight:700;line-height:1.4}.reading{font-size:14px;color:var(--muted);margin-top:2px;font-weight:500}
+.meaning{font-size:15px;color:var(--muted);margin-top:3px}.example{font-size:14.5px;color:#333;margin-top:3px}
+.item{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0;padding-bottom:0}.item:first-child{padding-top:0}
+button{font:inherit;border:0;border-radius:7px;padding:5px 10px;background:var(--accent);color:white;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap}
+button.ghost{background:transparent;color:var(--accent);border:1px solid #bfdbfe}
+.forvo-note{font-size:13.5px;color:var(--muted);margin:0 0 10px;line-height:1.45}.forvo-note a{color:var(--accent);font-weight:600;text-decoration:none}
+.pattern{background:var(--accent-soft);border-radius:8px;padding:12px 13px;margin:10px 0;font-size:16px;line-height:1.6}
+.pattern strong{color:var(--accent)}.note{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:11px 13px;font-size:15px;margin-top:10px;line-height:1.5}
+.note strong{color:var(--warn)}.dialogue{display:flex;flex-direction:column;gap:12px}
+.turn{display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:start}
+.speaker{font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:6px 0;text-align:center}
+.practice{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 13px;margin-top:8px}
+.practice-label{font-size:12px;font-weight:700;color:var(--green);margin-bottom:5px}
+.quiz-q{padding:11px 0;border-top:1px solid var(--line)}.quiz-q:first-of-type{border-top:0;padding-top:0}
+.quiz-q p{font-weight:700;margin:0 0 7px;font-size:15.5px}
+.opt{display:flex;gap:8px;align-items:flex-start;padding:3px 0;font-size:15px}.opt input{margin-top:4px;accent-color:var(--accent)}
+#result{margin-top:12px;font-weight:700;min-height:22px;font-size:15px}
+.hw{display:flex;flex-direction:column;gap:8px}.hw-item{background:#f4f4f2;border-radius:8px;padding:11px 13px;font-size:15px}.hw-item b{display:block;margin-bottom:2px}
+.footer{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);line-height:1.5}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.number-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.num{background:#f7f8fa;border:1px solid var(--line);border-radius:8px;padding:9px 10px}
+.num .jp{font-size:19px}.num small{color:var(--muted);font-size:13px}
+@media(max-width:420px){body{font-size:17px}.number-grid{grid-template-columns:1fr 1fr}.jp{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><div class="brand"><a href="index.html">← 로드맵</a></div><div class="badge">DAY 02</div></div>
+  <h1>숫자와 나이</h1>
+  <p class="sub">대학 어학당 초급 2일차 · 숫자 읽기·나이 묻고 답하기 · 45~60분</p>
+
+  <div class="block">
+    <div class="block-title">오늘 목표</div>
+    <div class="pattern" style="margin:0">
+      ① 1부터 100까지 기본 숫자를 읽고 말한다<br>
+      ② 나이를 셀 때 사용하는 「〜歳（さい）」를 익힌다<br>
+      ③ 「何歳ですか」로 나이를 묻고 대답한다<br>
+      ④ 숫자와 나이를 활용해 짧은 대화를 완성한다
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">지난 시간 연결 · DAY 01 복습</div>
+    <p class="muted">지난 시간에는 자기소개 문장 「〜は〜です」를 배웠습니다. 오늘은 그 문장에 나이를 넣어 한 단계 더 긴 자기소개를 만들어 보겠습니다.</p>
+    <div class="item"><div><div class="jp"><ruby>私<rt>わたし</rt></ruby>はキムです。</div><div class="meaning">저는 킴입니다.</div></div><button onclick="say('わたしは キムです')">▶</button></div>
+    <div class="item"><div><div class="jp"><ruby>私<rt>わたし</rt></ruby>は<ruby>学生<rt>がくせい</rt></ruby>です。</div><div class="meaning">저는 학생입니다.</div></div><button onclick="say('わたしは がくせいです')">▶</button></div>
+    <div class="item"><div><div class="jp"><ruby>私<rt>わたし</rt></ruby>は20<ruby>歳<rt>さい</rt></ruby>です。</div><div class="meaning">저는 20살입니다.</div></div><button onclick="say('わたしは はたちです')">▶</button></div>
+    <div class="note"><strong>오늘의 연결 포인트</strong><br>DAY 01에서 배운 「私は〜です」의 빈칸에 나이를 넣으면 됩니다. 단, 나이를 말할 때는 숫자 뒤에 「歳（さい）」를 붙이며 일부 숫자는 발음이 달라집니다.</div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">1. 단어 · 기본 숫자 1~10</div>
+    <p class="forvo-note">숫자 발음은 <a href="https://forvo.com/languages/ja/" target="_blank" rel="noopener">Forvo</a>에서 일본어 원어민 녹음으로 확인할 수 있습니다.</p>
+    <div class="number-grid">
+      <div class="num"><div class="jp">1 · <ruby>一<rt>いち</rt></ruby></div><small>いち · 이치</small></div>
+      <div class="num"><div class="jp">2 · <ruby>二<rt>に</rt></ruby></div><small>に · 니</small></div>
+      <div class="num"><div class="jp">3 · <ruby>三<rt>さん</rt></ruby></div><small>さん · 산</small></div>
+      <div class="num"><div class="jp">4 · <ruby>四<rt>よん</rt></ruby></div><small>よん · 욘</small></div>
+      <div class="num"><div class="jp">5 · <ruby>五<rt>ご</rt></ruby></div><small>ご · 고</small></div>
+      <div class="num"><div class="jp">6 · <ruby>六<rt>ろく</rt></ruby></div><small>ろく · 로쿠</small></div>
+      <div class="num"><div class="jp">7 · <ruby>七<rt>なな</rt></ruby></div><small>なな · 나나</small></div>
+      <div class="num"><div class="jp">8 · <ruby>八<rt>はち</rt></ruby></div><small>はち · 하치</small></div>
+      <div class="num"><div class="jp">9 · <ruby>九<rt>きゅう</rt></ruby></div><small>きゅう · 큐-</small></div>
+      <div class="num"><div class="jp">10 · <ruby>十<rt>じゅう</rt></ruby></div><small>じゅう · 주-</small></div>
+    </div>
+    <div class="controls"><button onclick="say('いち、に、さん、よん、ご、ろく、なな、はち、きゅう、じゅう')">▶ 1~10 연속 듣기</button></div>
+    <div class="note"><strong>4와 7은 우선 이렇게 외우세요.</strong><br>숫자 4는 「よん」, 7은 「なな」를 먼저 익힙니다. 일본어 숫자는 뒤에 붙는 말이나 상황에 따라 다른 읽기도 나타나므로, 지금은 기본 숫자를 확실히 익히는 것이 우선입니다.</div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">2. 숫자 · 11부터 100까지</div>
+    <p>일본어의 11~19는 「10 + 숫자」, 20·30·40은 「숫자 + 10」의 방식으로 만듭니다. 기본 숫자 1~10을 알면 규칙적으로 읽을 수 있습니다.</p>
+    <div class="pattern">
+      <strong>숫자 만드는 기본 원리</strong><br>
+      11 = 十（じゅう）+ 一（いち） → <b>じゅういち</b><br>
+      14 = 十（じゅう）+ 四（よん） → <b>じゅうよん</b><br>
+      20 = 二（に）+ 十（じゅう） → <b>にじゅう</b><br>
+      35 = 三十（さんじゅう）+ 五（ご） → <b>さんじゅうご</b>
+    </div>
+    <div class="item"><div><div class="jp">11 · <ruby>十一<rt>じゅういち</rt></ruby></div><div class="meaning">じゅういち · 십일</div></div><button onclick="say('じゅういち')">▶</button></div>
+    <div class="item"><div><div class="jp">12 · <ruby>十二<rt>じゅうに</rt></ruby></div><div class="meaning">じゅうに · 십이</div></div><button onclick="say('じゅうに')">▶</button></div>
+    <div class="item"><div><div class="jp">14 · <ruby>十四<rt>じゅうよん</rt></ruby></div><div class="meaning">じゅうよん · 십사</div></div><button onclick="say('じゅうよん')">▶</button></div>
+    <div class="item"><div><div class="jp">20 · <ruby>二十<rt>にじゅう</rt></ruby></div><div class="meaning">にじゅう · 이십</div></div><button onclick="say('にじゅう')">▶</button></div>
+    <div class="item"><div><div class="jp">30 · <ruby>三十<rt>さんじゅう</rt></ruby></div><div class="meaning">さんじゅう · 삼십</div></div><button onclick="say('さんじゅう')">▶</button></div>
+    <div class="item"><div><div class="jp">40 · <ruby>四十<rt>よんじゅう</rt></ruby></div><div class="meaning">よんじゅう · 사십</div></div><button onclick="say('よんじゅう')">▶</button></div>
+    <div class="item"><div><div class="jp">50 · <ruby>五十<rt>ごじゅう</rt></ruby></div><div class="meaning">ごじゅう · 오십</div></div><button onclick="say('ごじゅう')">▶</button></div>
+    <div class="item"><div><div class="jp">60 · <ruby>六十<rt>ろくじゅう</rt></ruby></div><div class="meaning">ろくじゅう · 육십</div></div><button onclick="say('ろくじゅう')">▶</button></div>
+    <div class="item"><div><div class="jp">70 · <ruby>七十<rt>ななじゅう</rt></ruby></div><div class="meaning">ななじゅう · 칠십</div></div><button onclick="say('ななじゅう')">▶</button></div>
+    <div class="item"><div><div class="jp">80 · <ruby>八十<rt>はちじゅう</rt></ruby></div><div class="meaning">はちじゅう · 팔십</div></div><button onclick="say('はちじゅう')">▶</button></div>
+    <div class="item"><div><div class="jp">90 · <ruby>九十<rt>きゅうじゅう</rt></ruby></div><div class="meaning">きゅうじゅう · 구십</div></div><button onclick="say('きゅうじゅう')">▶</button></div>
+    <div class="item"><div><div class="jp">100 · <ruby>百<rt>ひゃく</rt></ruby></div><div class="meaning">ひゃく · 백</div></div><button onclick="say('ひゃく')">▶</button></div>
+    <div class="note"><strong>숫자 읽기 연습법</strong><br>먼저 10, 20, 30처럼 십 단위 숫자를 익힌 다음, 21은 にじゅういち, 46은 よんじゅうろく처럼 조합해 보세요. 모든 숫자를 하나씩 따로 외울 필요는 없습니다.</div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">3. 단어 · 나이와 관련된 표현</div>
+    <div class="item"><div><div class="jp"><ruby>歳<rt>さい</rt></ruby></div><div class="reading">[さい]</div><div class="meaning">~살, 나이를 세는 단위</div><div class="example">숫자 뒤에 붙여 나이를 나타냅니다.</div></div><button onclick="say('さい')">▶</button></div>
+    <div class="item"><div><div class="jp"><ruby>年齢<rt>ねんれい</rt></ruby></div><div class="reading">[ねんれい]</div><div class="meaning">연령, 나이</div></div><button onclick="say('ねんれい')">▶</button></div>
+    <div class="item"><div><div class="jp"><ruby>何歳<rt>なんさい</rt></ruby></div><div class="reading">[なんさい]</div><div class="meaning">몇 살</div><div class="example">상대방의 나이를 물을 때 사용합니다.</div></div><button onclick="say('なんさい')">▶</button></div>
+    <div class="item"><div><div class="jp">おいくつ</div><div class="reading">[おいくつ]</div><div class="meaning">몇 살이세요? (더 공손한 표현)</div><div class="example">나이를 정중하게 물을 때 사용할 수 있습니다.</div></div><button onclick="say('おいくつ')">▶</button></div>
+    <div class="item"><div><div class="jp"><ruby>今年<rt>ことし</rt></ruby></div><div class="reading">[ことし]</div><div class="meaning">올해</div></div><button onclick="say('ことし')">▶</button></div>
+    <div class="item"><div><div class="jp"><ruby>誕生日<rt>たんじょうび</rt></ruby></div><div class="reading">[たんじょうび]</div><div class="meaning">생일</div></div><button onclick="say('たんじょうび')">▶</button></div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">4. 문법 · 나이를 나타내는 「〜歳です」</div>
+    <p>나이를 말할 때는 숫자 뒤에 「歳（さい）」를 붙입니다. 문장 끝에는 DAY 01에서 배운 「です」를 그대로 사용합니다.</p>
+    <div class="pattern"><strong>기본 구조</strong><br>숫자 + <strong>歳（さい）</strong> + です。<br>“~살입니다.”</div>
+    <div class="item"><div><div class="jp">1<ruby>歳<rt>いっさい</rt></ruby>です。</div><div class="reading">[いっさいです]</div><div class="meaning">1살입니다.</div></div><button onclick="say('いっさいです')">▶</button></div>
+    <div class="item"><div><div class="jp">2<ruby>歳<rt>にさい</rt></ruby>です。</div><div class="reading">[にさいです]</div><div class="meaning">2살입니다.</div></div><button onclick="say('にさいです')">▶</button></div>
+    <div class="item"><div><div class="jp">3<ruby>歳<rt>さんさい</rt></ruby>です。</div><div class="reading">[さんさいです]</div><div class="meaning">3살입니다.</div></div><button onclick="say('さんさいです')">▶</button></div>
+    <div class="item"><div><div class="jp">4<ruby>歳<rt>よんさい</rt></ruby>です。</div><div class="reading">[よんさいです]</div><div class="meaning">4살입니다.</div></div><button onclick="say('よんさいです')">▶</button></div>
+    <div class="item"><div><div class="jp">5<ruby>歳<rt>ごさい</rt></ruby>です。</div><div class="reading">[ごさいです]</div><div class="meaning">5살입니다.</div></div><button onclick="say('ごさいです')">▶</button></div>
+    <div class="item"><div><div class="jp">6<ruby>歳<rt>ろくさい</rt></ruby>です。</div><div class="reading">[ろくさいです]</div><div class="meaning">6살입니다.</div></div><button onclick="say('ろくさいです')">▶</button></div>
+    <div class="item"><div><div class="jp">7<ruby>歳<rt>ななさい</rt></ruby>です。</div><div class="reading">[ななさいです]</div><div class="meaning">7살입니다.</div></div><button onclick="say('ななさいです')">▶</button></div>
+    <div class="item"><div><div class="jp">8<ruby>歳<rt>はっさい</rt></ruby>です。</div><div class="reading">[はっさいです]</div><div class="meaning">8살입니다.</div></div><button onclick="say('はっさいです')">▶</button></div>
+    <div class="item"><div><div class="jp">9<ruby>歳<rt>きゅうさい</rt></ruby>です。</div><div class="reading">[きゅうさいです]</div><div class="meaning">9살입니다.</div></div><button onclick="say('きゅうさいです')">▶</button></div>
+    <div class="item"><div><div class="jp">10<ruby>歳<rt>じゅっさい</rt></ruby>です。</div><div class="reading">[じゅっさいです]</div><div class="meaning">10살입니다.</div></div><button onclick="say('じゅっさいです')">▶</button></div>
+    <div class="item"><div><div class="jp">20<ruby>歳<rt>はたち</rt></ruby>です。</div><div class="reading">[はたちです]</div><div class="meaning">20살입니다.</div></div><button onclick="say('はたちです')">▶</button></div>
+    <div class="note"><strong>반드시 따로 외워야 하는 나이 발음</strong><br>1살은 いちさい가 아니라 <b>いっさい</b>, 8살은 はちさい가 아니라 <b>はっさい</b>, 20살은 にじゅっさい가 아니라 특별히 <b>はたち</b>라고 합니다. 10살은 じゅっさい 또는 じっさい라고도 읽습니다. 우선 이 수업에서는 じゅっさい를 기준으로 익힙니다.</div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">5. 문법 · 나이를 묻고 대답하기</div>
+    <p>상대방의 나이를 물을 때는 「何歳ですか」를 사용합니다. 「何（なん）」은 ‘무엇/몇’, 「歳（さい）」는 나이를 세는 단위입니다.</p>
+    <div class="pattern"><strong>질문</strong><br><ruby>何歳<rt>なんさい</rt></ruby>ですか。<br>몇 살입니까? / 몇 살이에요?<br><br><strong>대답</strong><br>私は ［숫자］歳です。<br>저는 ［숫자］살입니다.</div>
+    <div class="item"><div><div class="jp"><ruby>何歳<rt>なんさい</rt></ruby>ですか。</div><div class="reading">[なんさいですか]</div><div class="meaning">몇 살이에요?</div></div><button onclick="say('なんさいですか')">▶</button></div>
+    <div class="item"><div><div class="jp"><ruby>私<rt>わたし</rt></ruby>は25<ruby>歳<rt>にじゅうごさい</rt></ruby>です。</div><div class="reading">[わたしは にじゅうごさいです]</div><div class="meaning">저는 25살입니다.</div></div><button onclick="say('わたしは にじゅうごさいです')">▶</button></div>
+    <div class="item"><div><div class="jp">おいくつですか。</div><div class="reading">[おいくつですか]</div><div class="meaning">연세가 어떻게 되세요? / 몇 살이세요?</div></div><button onclick="say('おいくつですか')">▶</button></div>
+    <div class="item"><div><div class="jp">20<ruby>歳<rt>はたち</rt></ruby>です。</div><div class="reading">[はたちです]</div><div class="meaning">20살입니다.</div></div><button onclick="say('はたちです')">▶</button></div>
+    <div class="note"><strong>말할 때 주의할 점</strong><br>「何歳ですか」는 기본적인 정중 표현이지만 상대방과 상황에 따라 나이를 직접 묻는 것이 실례가 될 수 있습니다. 더 공손하게 묻고 싶을 때는 「おいくつですか」를 사용할 수 있습니다. 대답에서는 「私は」를 생략하고 「25歳です」처럼 말해도 자연스럽습니다.</div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">6. 간단한 질문 · 「これは何ですか」</div>
+    <p>DAY 01에서 배운 「何（なに／なん）」을 활용해 사물의 이름을 물어볼 수 있습니다. 「これ」는 ‘이것’, 「は」는 문장의 주제를 나타내는 조사입니다.</p>
+    <div class="pattern"><strong>기본 구조</strong><br>これ は 何 ですか。<br>이것은 무엇입니까?</div>
+    <div class="item"><div><div class="jp">これ は <ruby>何<rt>なん</rt></ruby>ですか。</div><div class="reading">[これは なんですか]</div><div class="meaning">이것은 무엇이에요?</div></div><button onclick="say('これは なんですか')">▶</button></div>
+    <div class="item"><div><div class="jp">これは<ruby>本<rt>ほん</rt></ruby>です。</div><div class="reading">[これは ほんです]</div><div class="meaning">이것은 책입니다.</div></div><button onclick="say('これは ほんです')">▶</button></div>
+    <div class="item"><div><div class="jp">これは<ruby>水<rt>みず</rt></ruby>です。</div><div class="reading">[これは みずです]</div><div class="meaning">이것은 물입니다.</div></div><button onclick="say('これは みずです')">▶</button></div>
+    <div class="note"><strong>오늘은 여기까지만 기억하세요.</strong><br>「これ」는 이것, 「何」는 무엇, 「ですか」는 정중한 질문을 만드는 표현입니다. 「これ」와 「それ」, 「あれ」의 구분은 이후 수업에서 더 자세히 다룹니다.</div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">7. 회화 연습</div>
+    <p class="muted" style="margin-bottom:10px">숫자와 나이를 실제 대화에서 사용해 봅시다. 먼저 음성을 듣고, 각 문장을 직접 따라 말해 보세요.</p>
+    <div class="dialogue">
+      <div class="turn"><div class="speaker">A</div><div><div class="jp" style="font-size:20px">こんにちは。</div><div class="meaning">안녕하세요.</div></div><button onclick="say('こんにちは')">▶</button></div>
+      <div class="turn"><div class="speaker">B</div><div><div class="jp" style="font-size:20px">こんにちは。</div><div class="meaning">안녕하세요.</div></div><button onclick="say('こんにちは')">▶</button></div>
+      <div class="turn"><div class="speaker">A</div><div><div class="jp" style="font-size:20px"><ruby>何歳<rt>なんさい</rt></ruby>ですか。</div><div class="meaning">몇 살이에요?</div></div><button onclick="say('なんさいですか')">▶</button></div>
+      <div class="turn"><div class="speaker">B</div><div><div class="jp" style="font-size:20px">私は25<ruby>歳<rt>にじゅうごさい</rt></ruby>です。</div><div class="meaning">저는 25살입니다.</div></div><button onclick="say('わたしは にじゅうごさいです')">▶</button></div>
+      <div class="turn"><div class="speaker">A</div><div><div class="jp" style="font-size:20px">そうですか。</div><div class="reading">[そうですか]</div><div class="meaning">그렇군요.</div></div><button onclick="say('そうですか')">▶</button></div>
+      <div class="turn"><div class="speaker">B</div><div><div class="jp" style="font-size:20px">はい。</div><div class="meaning">네.</div></div><button onclick="say('はい')">▶</button></div>
+      <div class="turn"><div class="speaker">A</div><div><div class="jp" style="font-size:20px">これは<ruby>何<rt>なん</rt></ruby>ですか。</div><div class="meaning">이것은 무엇이에요?</div></div><button onclick="say('これは なんですか')">▶</button></div>
+      <div class="turn"><div class="speaker">B</div><div><div class="jp" style="font-size:20px">これは<ruby>本<rt>ほん</rt></ruby>です。</div><div class="meaning">이것은 책입니다.</div></div><button onclick="say('これは ほんです')">▶</button></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">8. 직접 만들어 보기</div>
+    <div class="practice"><div class="practice-label">연습 1 · 숫자 말하기</div><div class="jp" style="font-size:20px">12 · 24 · 37 · 58 · 100</div><div class="meaning">숫자를 일본어로 바꾸어 각각 소리 내어 읽기</div></div>
+    <div class="practice"><div class="practice-label">연습 2 · 나이 대답하기</div><div class="jp" style="font-size:20px"><ruby>私<rt>わたし</rt></ruby>は（　　）<ruby>歳<rt>さい</rt></ruby>です。</div><div class="meaning">괄호에 자신의 나이를 넣어 문장 완성하기</div></div>
+    <div class="practice"><div class="practice-label">연습 3 · 질문과 대답</div><div class="jp" style="font-size:20px"><ruby>何歳<rt>なんさい</rt></ruby>ですか。 → （　　　　　　　　　）</div><div class="meaning">자신의 나이를 넣어 일본어로 대답하기</div></div>
+    <div class="practice"><div class="practice-label">연습 4 · 오늘 배운 내용 연결</div><div class="jp" style="font-size:19px"><ruby>私<rt>わたし</rt></ruby>は（이름）です。韓国人です。学生です。（나이）歳です。</div><div class="meaning">DAY 01 자기소개에 오늘 배운 나이 표현을 더해 4문장 자기소개 완성하기</div></div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">9. 확인 문제</div>
+    <form id="quizform">
+      <div class="quiz-q"><p>1. 숫자 「4」의 기본적인 읽기로 이 수업에서 익힌 것은?</p>
+        <label class="opt"><input type="radio" name="q1" value="a"> し</label><label class="opt"><input type="radio" name="q1" value="b"> よん</label><label class="opt"><input type="radio" name="q1" value="c"> なな</label></div>
+      <div class="quiz-q"><p>2. 숫자 「35」의 올바른 읽기는?</p>
+        <label class="opt"><input type="radio" name="q2" value="a"> さんじゅうご</label><label class="opt"><input type="radio" name="q2" value="b"> ごじゅうさん</label><label class="opt"><input type="radio" name="q2" value="c"> さんごじゅう</label></div>
+      <div class="quiz-q"><p>3. 「8歳」의 올바른 읽기는?</p>
+        <label class="opt"><input type="radio" name="q3" value="a"> はちさい</label><label class="opt"><input type="radio" name="q3" value="b"> はっさい</label><label class="opt"><input type="radio" name="q3" value="c"> はたち</label></div>
+      <div class="quiz-q"><p>4. 「20歳」의 특별한 읽기는?</p>
+        <label class="opt"><input type="radio" name="q4" value="a"> にじゅっさい</label><label class="opt"><input type="radio" name="q4" value="b"> にじゅうさい</label><label class="opt"><input type="radio" name="q4" value="c"> はたち</label></div>
+      <div class="quiz-q"><p>5. 「何歳ですか」의 뜻은?</p>
+        <label class="opt"><input type="radio" name="q5" value="a"> 이름이 뭐예요?</label><label class="opt"><input type="radio" name="q5" value="b"> 몇 살이에요?</label><label class="opt"><input type="radio" name="q5" value="c"> 어디에서 왔어요?</label></div>
+      <div class="quiz-q"><p>6. 「저는 25살입니다」를 올바르게 말한 것은?</p>
+        <label class="opt"><input type="radio" name="q6" value="a"> 私は二十五歳です。</label><label class="opt"><input type="radio" name="q6" value="b"> 私は二十五人です。</label><label class="opt"><input type="radio" name="q6" value="c"> 私は二十五年です。</label></div>
+      <div class="quiz-q"><p>7. 「이것은 무엇입니까?」에 해당하는 문장은?</p>
+        <label class="opt"><input type="radio" name="q7" value="a"> これは何ですか。</label><label class="opt"><input type="radio" name="q7" value="b"> 私は何ですか。</label><label class="opt"><input type="radio" name="q7" value="c"> 何歳ですか。</label></div>
+      <div class="controls"><button type="button" onclick="grade()">채점하기</button><button type="reset" class="ghost" onclick="document.getElementById('result').textContent=''">다시 풀기</button></div>
+      <div id="result"></div>
+    </form>
+  </div>
+
+  <div class="block">
+    <div class="block-title">10. 오늘 숙제</div>
+    <div class="hw">
+      <div class="hw-item"><b>① 숫자 암기</b>1~10과 10단위 숫자 20~100을 일본어로 읽고, 11~99 중 임의의 숫자 10개를 만들어 읽기</div>
+      <div class="hw-item"><b>② 나이 발음</b>1歳·8歳·10歳·20歳의 읽는 법을 각각 5회씩 말하기</div>
+      <div class="hw-item"><b>③ 문장 만들기</b>「私は〜歳です」로 자신의 나이를 말하고, 「何歳ですか」 질문에 대답하기</div>
+      <div class="hw-item"><b>④ 누적 복습</b>DAY 01 자기소개와 DAY 02 나이 표현을 연결해 자기소개를 처음부터 끝까지 말하기</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    숫자는 조합 규칙으로 익히고, 나이를 셀 때 달라지는 발음은 예외 표현으로 따로 기억하세요.<br>
+    음성 재생은 기기와 브라우저의 일본어 음성 지원 여부에 따라 달라질 수 있습니다.
+  </div>
+</div>
+<script>
+function say(text, rate=0.88){
+  if(!('speechSynthesis' in window)){alert('이 브라우저에서는 음성 재생을 지원하지 않습니다.');return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';
+  const vs=speechSynthesis.getVoices();const voice=vs.find(v=>/^ja(-|_)/i.test(v.lang));
+  if(voice)u.voice=voice;u.rate=rate;speechSynthesis.speak(u);
+}
+function grade(){
+  const key={q1:'b',q2:'a',q3:'b',q4:'c',q5:'b',q6:'a',q7:'a'};
+  let score=0,answered=0;
+  for(const k in key){const v=document.querySelector('input[name="'+k+'"]:checked');if(v){answered++;if(v.value===key[k])score++;}}
+  const r=document.getElementById('result');
+  if(answered<7){r.style.color='#2563eb';r.textContent='아직 '+(7-answered)+'문제가 남았습니다.';}
+  else{r.style.color=score===7?'#16a34a':'#2563eb';r.textContent='결과: '+score+' / 7점'+(score===7?' · 전부 맞았습니다!':' · 틀린 부분을 수업에서 다시 확인해보세요.');}
+}
+</script>
+
+<div class="progress-control" style="margin:18px 0 0;padding:14px;background:#fff;border:1px solid #e4e4e1;border-radius:12px;text-align:center">
+  <button id="completeLesson" type="button" style="padding:9px 14px;background:#2563eb;color:#fff;border:0;border-radius:7px;font-weight:700">이 수업을 완료로 표시</button>
+  <p id="completeMessage" style="font-size:13px;color:#5c5c5c;margin:8px 0 0">완료 버튼을 누르면 홈페이지 로드맵의 학습 기록에 반영됩니다.</p>
+</div>
+<script>
+(function(){
+  const day=2,key='japanese-study-completed-days';
+  let completed=[];try{completed=JSON.parse(localStorage.getItem(key)||'[1]');}catch(e){completed=[1];}
+  if(!Array.isArray(completed))completed=[1];
+  const button=document.getElementById('completeLesson'),message=document.getElementById('completeMessage');
+  const paint=()=>{const done=completed.includes(day);button.textContent=done?'완료 표시됨 · 다시 학습하기':'이 수업을 완료로 표시';button.style.background=done?'#16834a':'#2563eb';message.textContent=done?'완료 기록이 이 기기에 저장되어 있습니다.':'완료 버튼을 누르면 홈페이지 로드맵의 학습 기록에 반영됩니다.';};
+  button.addEventListener('click',()=>{if(!completed.includes(day))completed.push(day);localStorage.setItem(key,JSON.stringify(completed));paint();});
+  paint();
+})();
+</script>
+
+</body>
+</html>

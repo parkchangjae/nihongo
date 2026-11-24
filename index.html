@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f7f5">
+<title>日本語の勉強 · 일본어 학습</title>
+<style>
+:root{--bg:#f7f7f5;--paper:#fff;--ink:#1a1a1a;--muted:#686868;--line:#e7e7e3;--blue:#2563eb;--blue-soft:#eff6ff;--green:#16834a;--green-soft:#effaf3;--shadow:0 8px 28px rgba(25,25,25,.045)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Noto Sans KR","Apple SD Gothic Neo",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}.page{max-width:1000px;margin:0 auto;padding:22px 20px 64px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:42px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;letter-spacing:-.03em}
+.brand-mark{width:34px;height:34px;border-radius:11px;background:#1e293b;color:#fff;display:grid;place-items:center;font-family:serif;font-size:18px}
+.brand small{display:block;font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.12em}
+.nav{display:flex;gap:18px;font-size:13px;color:var(--muted)}.nav a{text-decoration:none}.nav a:hover{color:var(--blue)}
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:28px;align-items:center;margin-bottom:30px}
+.eyebrow{font-size:11px;letter-spacing:.16em;font-weight:800;color:var(--blue);margin-bottom:12px}
+h1{font-size:clamp(32px,5vw,48px);line-height:1.16;letter-spacing:-.055em;margin:0 0 14px}
+.lead{font-size:15px;line-height:1.8;color:var(--muted);max-width:520px;margin:0}
+.hero-panel{background:#202b3b;color:#fff;border-radius:20px;padding:23px 22px;min-height:178px;position:relative;overflow:hidden}
+.hero-panel:after{content:"日";position:absolute;right:18px;bottom:-42px;font-family:serif;font-size:160px;line-height:1;color:rgba(255,255,255,.07)}
+.panel-kicker{font-size:11px;letter-spacing:.12em;color:#cbd5e1;font-weight:700}
+.panel-title{font-size:22px;font-weight:750;letter-spacing:-.04em;margin:12px 0 6px}
+.panel-copy{font-size:12px;color:#cbd5e1;max-width:220px}
+.panel-tag{display:inline-block;margin-top:17px;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:5px 10px;font-size:11px;color:#e2e8f0}
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0 42px}
+.quick{display:block;text-decoration:none;background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:16px 15px;min-height:112px;transition:transform .15s,border-color .15s}
+.quick:active{transform:scale(.985)}.quick:hover{border-color:#cbd5e1}.quick-icon{font-size:19px;margin-bottom:10px}
+.quick strong{display:block;font-size:14px;margin-bottom:3px}.quick span{font-size:11px;color:var(--muted)}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:16px}
+.section-head h2{font-size:22px;letter-spacing:-.04em;margin:0}.section-head p{font-size:12px;color:var(--muted);margin:4px 0 0}
+.goal{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:15px 17px;margin-bottom:22px;display:flex;gap:12px;align-items:flex-start}
+.goal-mark{width:27px;height:27px;border-radius:9px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;flex:0 0 auto;font-weight:800}
+.goal strong{font-size:13px}.goal p{margin:3px 0 0;color:var(--muted);font-size:13px}
+.path{position:relative;padding-left:28px}.path:before{content:"";position:absolute;left:9px;top:7px;bottom:8px;width:2px;background:var(--line)}
+.month{font-size:11px;font-weight:800;letter-spacing:.12em;color:#7b7b76;margin:25px 0 12px}.month:first-child{margin-top:0}
+.node{position:relative;margin-bottom:11px}.dot{position:absolute;left:-28px;top:17px;width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--line);z-index:1}
+.node.current .dot{background:var(--blue);border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}
+.node.done .dot{background:var(--green);border-color:var(--green);box-shadow:0 0 0 4px var(--green-soft)}
+.card{display:flex;justify-content:space-between;align-items:center;gap:16px;background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:15px 17px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.015);transition:border-color .15s,transform .15s}
+a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-width:0}
+.label{font-size:10px;font-weight:800;letter-spacing:.09em;color:var(--blue);margin-bottom:4px}
+.card h3{font-size:15px;letter-spacing:-.025em;margin:0 0 3px}.card p{font-size:12px;color:var(--muted);margin:0}
+.card-arrow{color:#9ca3af;font-size:19px;flex:0 0 auto}
+.node.done .label{color:var(--green)}.node.current .label{color:var(--blue)}
+.status{font-size:11px;color:var(--muted);white-space:nowrap}.node.current .status{color:var(--blue);font-weight:800}.node.done .status{color:var(--green);font-weight:800}
+.node.locked .card{background:#fbfbfa}.node.locked .label{color:#92928d}.node.locked h3{color:#666}.node.locked .card p{color:#999}
+.lock{font-size:11px;color:#9a9a94;white-space:nowrap}
+.tool-section{margin-top:42px}.tool-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.tool{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:17px}
+.tool-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.tool-icon{width:34px;height:34px;border-radius:10px;background:#f2f3f1;display:grid;place-items:center}
+.tool h3{font-size:14px;margin:0}.tool p{font-size:12px;color:var(--muted);line-height:1.65;margin:0}
+.tool.soon{background:#fbfbfa}.soon-label{display:inline-block;font-size:10px;color:#777;background:#f0f0ed;padding:3px 7px;border-radius:999px;margin-top:11px}
+.footer{border-top:1px solid var(--line);margin-top:48px;padding-top:18px;color:#888;font-size:11px;display:flex;justify-content:space-between;gap:12px}
+@media(max-width:700px){.page{padding:17px 15px 48px}.topbar{margin-bottom:30px}.nav{gap:12px;font-size:11px}.hero{grid-template-columns:1fr;gap:18px}.hero-panel{min-height:145px}.quick-grid{grid-template-columns:repeat(2,1fr);gap:9px;margin:22px 0 34px}.quick{min-height:100px;padding:13px}.tool-grid{grid-template-columns:1fr}.section-head h2{font-size:20px}}
+@media(min-width:701px){.roadmap-layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:26px;align-items:start}.side-note{position:sticky;top:18px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px}.side-note h3{font-size:14px;margin:0 0 8px}.side-note p{font-size:12px;line-height:1.7;color:var(--muted);margin:0}}
+</style>
+</head>
+<body>
+<div class="page">
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark">日</span><span>日本語の勉強<small>JAPANESE STUDY</small></span></a>
+  <nav class="nav" aria-label="주요 메뉴"><a href="#roadmap">학습 로드맵</a><a href="#tools">학습 도구</a></nav>
+</header>
+<main>
+<section class="hero">
+  <div><div class="eyebrow">YOUR JAPANESE JOURNEY</div><h1>매일 조금씩,<br>자연스러운 일본어로.</h1><p class="lead">기초 문자와 문법부터 실제 일본인의 일상 대화까지. 하루씩 배우고, 듣고, 직접 말하면서 6개월의 학습 과정을 쌓아갑니다.</p></div>
+  <div class="hero-panel"><div class="panel-kicker">日本語 · DAILY STUDY</div><div class="panel-title">오늘의 공부를 시작해요.</div><div class="panel-copy">서두르지 않고 한 단계씩. 배운 표현을 실제 대화에서 사용할 수 있도록.</div><div class="panel-tag">6개월 기초 회화 과정</div></div>
+</section>
+<section class="quick-grid" aria-label="빠른 메뉴">
+  <a class="quick" href="#roadmap"><div class="quick-icon">📚</div><strong>일본어 수업</strong><span>DAY별 강의와 학습 진도</span></a>
+  <a class="quick" href="#tools"><div class="quick-icon">🗂️</div><strong>단어장 · 누적 복습</strong><span>배운 단어를 다시 확인</span></a>
+  <a class="quick" href="#tools"><div class="quick-icon">🎧</div><strong>듣기 · 발음</strong><span>일본어 음성으로 연습</span></a>
+  <a class="quick" href="#live"><div class="quick-icon">▶</div><strong>라이브 번역</strong><span>영상과 번역 기능 연결 준비</span></a>
+</section>
+<section id="roadmap">
+  <div class="section-head"><div><h2>6개월 학습 로드맵</h2><p>대학 어학당 초급 스타일 · 회화 중심</p></div></div>
+  <div class="goal"><div class="goal-mark">✓</div><div><strong>학습 목표</strong><p>6개월 후 일상 대화를 큰 막힘 없이 이어갈 수 있는 수준</p></div></div>
+  <div class="roadmap-layout">
+    <div class="path" id="roadmapPath"><div class="month">1개월 차 · 기초 세우기</div><p class="muted">수업 목록을 불러오는 중입니다.</p></div>
+    <aside class="side-note"><h3>학습 진행 안내</h3><p>파란색 점은 가장 최근에 추가된 수업을 나타냅니다. 수업 페이지 아래의 ‘이 수업을 완료로 표시’를 누르면 완료 기록이 이 기기에 저장되고, 로드맵의 점과 상태가 바뀝니다.<br><br>새 수업을 추가할 때는 새 DAY 파일과 <b>lessons.js</b>의 수업 목록만 갱신하면 됩니다. 홈페이지 디자인과 index.html은 매번 수정하지 않아도 됩니다.</p></aside>
+  </div>
+</section>
+<section class="tool-section" id="tools">
+  <div class="section-head"><div><h2>학습 도구</h2><p>수업과 함께 사용할 기능을 모아두는 공간</p></div></div>
+  <div class="tool-grid">
+    <article class="tool"><div class="tool-head"><div class="tool-icon">🗂️</div><h3>단어장 · 누적 복습</h3></div><p>수업에서 배운 단어를 모으고, 이전 학습 범위까지 섞어 반복해서 확인하는 기능입니다.</p><span class="soon-label">구성 예정</span></article>
+    <article class="tool"><div class="tool-head"><div class="tool-icon">🎧</div><h3>발음 · 듣기 연습</h3></div><p>일본어 음성 자료와 발음 확인, 문장 듣기 연습을 연결합니다.</p><span class="soon-label">구성 예정</span></article>
+  </div>
+</section>
+<section class="tool-section" id="live">
+  <div class="section-head"><div><h2>라이브 듣기 번역</h2><p>기존 Swift 앱과 연결하는 공간</p></div></div>
+  <article class="tool soon"><div class="tool-head"><div class="tool-icon">▶</div><h3>영상 + 실시간 번역 자막</h3></div><p>유튜브 영상과 일본어 원문, 한국어 번역, 번역 기록을 한 화면에서 확인하는 통합형 화면을 목표로 합니다. 현재는 메뉴와 구조만 마련되어 있으며 실제 번역 기능은 아직 연결되지 않았습니다.</p><span class="soon-label">개발 준비 중</span></article>
+</section>
+</main>
+<footer class="footer"><span>日本語の勉強 · 나만의 일본어 학습 공간</span><span>하루씩, 꾸준하게.</span></footer>
+</div>
+<script src="lessons.js"></script>
+<script>
+(function(){
+  const path=document.getElementById('roadmapPath');
+  const lessons=Array.isArray(window.JAPANESE_LESSONS)?window.JAPANESE_LESSONS:[];
+  const key='japanese-study-completed-days';
+  let completed=[];
+  try{
+    const saved=localStorage.getItem(key);
+    if(saved===null){completed=window.JAPANESE_INITIAL_COMPLETED||[];localStorage.setItem(key,JSON.stringify(completed));}
+    else completed=JSON.parse(saved);
+  }catch(e){completed=window.JAPANESE_INITIAL_COMPLETED||[];}
+  if(!Array.isArray(completed))completed=[];
+  const byDay=new Map(lessons.map(x=>[Number(x.day),x]));
+  const currentDay=lessons.reduce((m,x)=>Math.max(m,Number(x.day)||0),0);
+  function el(tag,cls,txt){const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n;}
+  function addMonth(label){path.appendChild(el('div','month',label));}
+  function addLesson(day){
+    const item=byDay.get(day);
+    if(!item){
+      const node=el('div','node locked');node.appendChild(el('div','dot'));
+      const card=el('div','card');const main=el('div','card-main');
+      main.appendChild(el('div','label','DAY '+String(day).padStart(2,'0')));
+      main.appendChild(el('h3','',day<=7?'1주차 누적 복습':'다음 학습 단계'));
+      main.appendChild(el('p','',day<=7?'복습 + 짧은 자기소개 완성':'기존 6개월 로드맵에 따라 순차 진행'));
+      card.appendChild(main);card.appendChild(el('span','lock','준비 중'));node.appendChild(card);path.appendChild(node);return;
+    }
+    const done=completed.includes(day),current=day===currentDay&&!done;
+    const node=el('div','node '+(done?'done':current?'current':'available'));node.appendChild(el('div','dot'));
+    const card=el('a','card');card.href=item.file;
+    const main=el('div','card-main');
+    main.appendChild(el('div','label',`DAY ${String(day).padStart(2,'0')}${current?' · 오늘의 수업':done?' · 완료':''}`));
+    main.appendChild(el('h3','',item.title));main.appendChild(el('p','',item.summary));
+    card.appendChild(main);card.appendChild(el('span','status',done?'완료':current?'학습 중':'다시 보기'));
+    node.appendChild(card);path.appendChild(node);
+  }
+  path.innerHTML='';
+  addMonth('1개월 차 · 기초 세우기');
+  for(let d=1;d<=7;d++)addLesson(d);
+  addMonth('2개월 차 · 문장 늘리기');
+  const stage2=[
+    ['2주차','장소와 존재','あります / います · どこですか'],
+    ['3~4주차','시간과 일과','時間 · 一日の生活 · ます형 동사']
+  ];
+  for(const s of stage2){
+    const node=el('div','node locked');node.appendChild(el('div','dot'));
+    const card=el('div','card'),main=el('div','card-main');
+    main.appendChild(el('div','label',s[0]));main.appendChild(el('h3','',s[1]));main.appendChild(el('p','',s[2]));
+    card.appendChild(main);card.appendChild(el('span','lock','준비 중'));node.appendChild(card);path.appendChild(node);
+  }
+  addMonth('3~6개월 · 회화 확장');
+  const stage3=[
+    ['중반','동사와 희망 표현','好きです · たいです · 과거형'],
+    ['후반','일상 회화 확장','의견 말하기 · 간단한 이유 · 자연스러운 주고받기']
+  ];
+  for(const s of stage3){
+    const node=el('div','node locked');node.appendChild(el('div','dot'));
+    const card=el('div','card'),main=el('div','card-main');
+    main.appendChild(el('div','label',s[0]));main.appendChild(el('h3','',s[1]));main.appendChild(el('p','',s[2]));
+    card.appendChild(main);card.appendChild(el('span','lock','준비 중'));node.appendChild(card);path.appendChild(node);
+  }
+})();
+</script>
+</body>
+</html>
