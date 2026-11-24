@@ -18,6 +18,8 @@
   const SILENT_WAV = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';
   let audioUnlocked = false;
   let activeObjectUrl = null;
+  let playbackTimer = null;
+  let playbackRunId = 0;
   let statusNode = null;
   let activeButton = null;
   let loadMessage = '';
@@ -43,7 +45,11 @@
   }
 
   function stop() {
+    playbackRunId++;
+    if (playbackTimer) { clearTimeout(playbackTimer); playbackTimer = null; }
     try { sharedAudio.pause(); } catch (_) {}
+    sharedAudio.onended = null;
+    sharedAudio.onerror = null;
     if (activeObjectUrl) { try { URL.revokeObjectURL(activeObjectUrl); } catch (_) {} activeObjectUrl = null; }
     if (activeButton) setButtonState(activeButton, 'idle');
     activeButton = null;
@@ -151,6 +157,19 @@
     return kokoroPromise;
   }
 
+  // Split only at natural Japanese phrase boundaries. The model still speaks
+  // each phrase; short gaps are added between phrases to avoid one long run-on.
+  function splitConversationalText(text) {
+    return (text.match(/[^、。！？\n]+[、。！？]?/g) || [text])
+      .map(part => part.trim()).filter(Boolean);
+  }
+
+  function pauseAfter(part) {
+    if (/[。！？]$/.test(part)) return /[！？]$/.test(part) ? 390 : 320;
+    if (/、$/.test(part)) return 135;
+    return 0;
+  }
+
   async function playText(rawText, button) {
     const text = clean(rawText);
     if (!text) { showStatus('재생할 일본어 문장을 찾지 못했습니다.'); return; }
@@ -160,44 +179,73 @@
     // not a newly-created Audio() after model synthesis has awaited.
     unlockAudioFromGesture();
 
+    const runId = playbackRunId;
     activeButton = button;
     setButtonState(button, 'loading');
-    showStatus('1/4 버튼 입력 확인 · 음성 데이터 확인 중…');
+    showStatus('1/4 버튼 입력 확인 · 자연스러운 문장 단위로 준비 중…');
     try {
-      let blob = await readCachedBlob(text);
-      if (blob) {
-        showStatus('2/4 저장된 음성 발견 · 재생 준비 중…');
-      } else {
-        showStatus('2/4 Kokoro 엔진 다운로드/초기화 중… 첫 실행은 오래 걸릴 수 있습니다.');
-        const tts = await getKokoro();
-        showStatus('3/4 일본어 음성 생성 중…');
-        const result = await tts.speak(text, VOICE);
-        blob = result.toBlob();
-        if (!(blob instanceof Blob) || !blob.size) throw new Error('Kokoro가 음성 파일을 만들지 못했습니다.');
-        showStatus(`3/4 음성 생성 완료 · ${(blob.size / 1024).toFixed(1)} KB · ${blob.type || 'MIME 미지정'}`);
-        await writeCachedBlob(text, blob);
+      const tts = await getKokoro();
+      const phrases = splitConversationalText(text);
+      const clips = [];
+      for (let i = 0; i < phrases.length; i++) {
+        if (runId !== playbackRunId) return;
+        const phrase = phrases[i];
+        // A versioned key keeps old single-block cache entries separate.
+        const cacheKey = 'conversation-v1:' + phrase;
+        let blob = await readCachedBlob(cacheKey);
+        if (!blob) {
+          showStatus(`2/4 음성 생성 중… (${i + 1}/${phrases.length})`);
+          const result = await tts.speak(phrase, VOICE);
+          blob = result.toBlob();
+          if (!(blob instanceof Blob) || !blob.size) throw new Error('Kokoro가 음성 파일을 만들지 못했습니다.');
+          await writeCachedBlob(cacheKey, blob);
+        }
+        clips.push({ blob, pause: pauseAfter(phrase) });
       }
-
-      activeObjectUrl = URL.createObjectURL(blob);
-      sharedAudio.pause();
-      sharedAudio.src = activeObjectUrl;
-      sharedAudio.preload = 'auto';
-      sharedAudio.onended = () => {
-        if (activeObjectUrl) { URL.revokeObjectURL(activeObjectUrl); activeObjectUrl = null; }
-        if (activeButton === button) { setButtonState(button, 'idle'); activeButton = null; }
-        showStatus('재생 완료.');
-      };
-      sharedAudio.onerror = () => {
-        const mediaError = sharedAudio.error;
-        showStatus(`4/4 오디오 디코딩 실패 · 코드 ${mediaError ? mediaError.code : '알 수 없음'} · MIME ${blob.type || '없음'} · ${blob.size} bytes`);
-        setButtonState(button, 'idle');
-      };
-      sharedAudio.onloadedmetadata = () => showStatus(`4/4 오디오 파일 확인 · 길이 ${Number.isFinite(sharedAudio.duration) ? sharedAudio.duration.toFixed(2) + '초' : '확인 중'} · 재생 시도…`);
-      sharedAudio.load();
+      if (runId !== playbackRunId) return;
+      showStatus(`3/4 음성 준비 완료 · ${clips.length}개 의미 단위 · 자연스러운 쉼 적용`);
       setButtonState(button, 'playing');
-      const playPromise = sharedAudio.play();
-      if (playPromise && typeof playPromise.then === 'function') await playPromise;
-      showStatus('재생 시작 확인. 소리가 들리지 않으면 iPhone 볼륨/출력 경로도 확인해 주세요.');
+
+      let index = 0;
+      const playNext = () => {
+        if (runId !== playbackRunId) return;
+        if (index >= clips.length) {
+          if (activeButton === button) { setButtonState(button, 'idle'); activeButton = null; }
+          showStatus('재생 완료.');
+          return;
+        }
+        const clip = clips[index++];
+        if (activeObjectUrl) { try { URL.revokeObjectURL(activeObjectUrl); } catch (_) {} }
+        activeObjectUrl = URL.createObjectURL(clip.blob);
+        sharedAudio.pause();
+        sharedAudio.src = activeObjectUrl;
+        sharedAudio.preload = 'auto';
+        sharedAudio.onended = () => {
+          if (activeObjectUrl) { try { URL.revokeObjectURL(activeObjectUrl); } catch (_) {} activeObjectUrl = null; }
+          if (clip.pause > 0 && index < clips.length) {
+            playbackTimer = setTimeout(() => { playbackTimer = null; playNext(); }, clip.pause);
+          } else playNext();
+        };
+        sharedAudio.onerror = () => {
+          const mediaError = sharedAudio.error;
+          showStatus(`4/4 오디오 디코딩 실패 · 코드 ${mediaError ? mediaError.code : '알 수 없음'} · ${clip.blob.size} bytes`);
+          setButtonState(button, 'idle');
+          activeButton = null;
+        };
+        sharedAudio.onloadedmetadata = () => {
+          if (index === 1) showStatus(`4/4 재생 준비 완료 · ${clips.length}개 구간 · 자연스러운 쉼 적용`);
+        };
+        sharedAudio.load();
+        const playPromise = sharedAudio.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+          playPromise.catch(error => {
+            showStatus('재생 오류: ' + (error.message || error));
+            setButtonState(button, 'idle');
+            activeButton = null;
+          });
+        }
+      };
+      playNext();
     } catch (error) {
       setButtonState(button, 'idle');
       activeButton = null;
