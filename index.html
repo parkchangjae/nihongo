@@ -32,6 +32,9 @@ h1{font-size:clamp(32px,5vw,48px);line-height:1.16;letter-spacing:-.055em;margin
 .section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:16px}
 .section-head h2{font-size:22px;letter-spacing:-.04em;margin:0}.section-head p{font-size:12px;color:var(--muted);margin:4px 0 0}
 .goal{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:15px 17px;margin-bottom:22px;display:flex;gap:12px;align-items:flex-start}
+.progress-note{display:flex;align-items:center;gap:14px;background:#eef4ff;border:1px solid #dbe7fb;border-radius:14px;padding:15px 18px;margin:0 0 16px;min-height:76px}
+.progress-note-mark{width:34px;height:34px;border-radius:11px;background:#dce9ff;color:#2456a6;display:grid;place-items:center;flex:0 0 auto;font-size:17px}
+.progress-note-copy{min-width:0;flex:1}.progress-note h3{font-size:13px;margin:0 0 3px;color:#1e3a66}.progress-note p{font-size:12px;line-height:1.65;color:#526783;margin:0}
 .goal-mark{width:27px;height:27px;border-radius:9px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;flex:0 0 auto;font-weight:800}
 .goal strong{font-size:13px}.goal p{margin:3px 0 0;color:var(--muted);font-size:13px}
 .path{position:relative;padding-left:28px}.path:before{content:"";position:absolute;left:9px;top:7px;bottom:8px;width:2px;background:var(--line)}
@@ -68,11 +71,24 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
 .study-workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:start}
 .ai-section{margin-top:38px;min-width:0}
 @media(min-width:900px){
-  .page{max-width:1320px}
-  .study-workspace{grid-template-columns:minmax(0,1fr) minmax(330px,390px);gap:26px}
+  .page{max-width:1480px;padding-left:30px;padding-right:30px}
+  .study-workspace{grid-template-columns:minmax(0,1fr) minmax(350px,400px);gap:30px}
   .ai-section{margin-top:0;position:sticky;top:14px}
   .ai-section>.section-head{margin-bottom:12px}
+  #roadmap>.section-head{margin-bottom:14px}
+  .progress-note{padding:17px 22px;min-height:82px;margin-bottom:18px}
+  .progress-note h3{font-size:14px}.progress-note p{font-size:13px}
+  .goal{padding:18px 21px;margin-bottom:24px}
+  .goal strong{font-size:14px}.goal p{font-size:13px}
+  .stage-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .stage-card{min-height:104px}
+  .stage-toggle{min-height:86px;padding:19px 18px}
+  .stage-kicker{font-size:11px}.stage-name{font-size:16px}.stage-meta{font-size:12px}
+  .stage-progress{font-size:12px}.stage-progress-track{height:5px}
+  .roadmap-tools{margin-bottom:17px}.compact-btn{font-size:13px;padding:11px 15px}
   .ai-section>.section-head h2{font-size:19px}
+  .roadmap-layout{display:block}
+  .side-note{display:none}
   .ai-panel{padding:15px;display:flex;flex-direction:column;min-height: min(78vh,820px)}
   .ai-top{align-items:flex-start;flex-direction:column;gap:4px}
   .ai-messages{height:min(62vh,660px);max-height:none;min-height:320px;flex:1}
@@ -121,7 +137,15 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
  .stage-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stage-card{min-width:0}.stage-toggle{padding:13px 12px}.stage-progress{font-size:10px}
  .ai-panel{padding:20px}.settings-card{max-height:88dvh}
 }
-@media (min-width:1101px){.page{max-width:1120px}.stage-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1101px) and (max-width:1399px){.page{max-width:100%;padding-left:24px;padding-right:24px}.study-workspace{grid-template-columns:minmax(0,1fr) minmax(330px,370px);gap:22px}.stage-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stage-toggle{padding:16px 14px;min-height:78px}.stage-name{font-size:15px}}
+@media (min-width:1400px){.page{max-width:1480px}.stage-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* Quick menu: perfectly balanced, centered three-card row */
+.quick-grid{width:100%;max-width:1120px;margin:28px auto 42px;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}
+.quick{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-width:0}
+.quick-icon{display:block;margin:0 0 9px;line-height:1.2}
+.quick strong{width:100%;text-align:center}
+.quick span{display:block;width:100%;text-align:center;line-height:1.5}
+@media(max-width:600px){.quick-grid{grid-template-columns:1fr;gap:9px;margin:18px auto 28px}.quick{min-height:76px;padding:12px}.quick-icon{margin-bottom:5px}.quick strong{font-size:14px}.quick span{font-size:11px}}
 button,a,input,textarea{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 </style>
 </head>
@@ -144,6 +168,7 @@ button,a,input,textarea{touch-action:manipulation;-webkit-tap-highlight-color:tr
 <div class="study-workspace">
 <section id="roadmap">
   <div class="section-head"><div><h2>1,000일 전체 학습 로드맵</h2><p>기초 문자부터 고급 회화·작문까지 · 전체 과정 수록</p></div></div>
+  <aside class="progress-note"><div class="progress-note-mark">↗</div><div class="progress-note-copy"><h3>학습 진행 안내</h3><p>10개 단계로 나누어 필요한 단계를 펼쳐보세요. 각 DAY를 완료하면 진도에 반영되며, Gist 동기화를 설정하면 다른 기기와 학습 기록을 공유할 수 있습니다.</p></div></aside>
   <div class="goal"><div class="goal-mark">✓</div><div><strong>학습 목표</strong><p>기초부터 고급 회화·독해·작문까지 1,000일에 걸쳐 단계적으로 확장</p></div></div>
   <div class="roadmap-layout">
     <div>
@@ -151,7 +176,6 @@ button,a,input,textarea{touch-action:manipulation;-webkit-tap-highlight-color:tr
       <div class="search-wrap" id="searchWrap"><input id="lessonSearch" type="search" placeholder="DAY 번호, 문법, 주제 검색"></div>
       <div class="stage-list" id="roadmapPath"><p class="muted">수업 목록을 불러오는 중입니다.</p></div>
     </div>
-    <aside class="side-note"><h3>학습 진행 안내</h3><p>10개 단계로 나누어 필요한 단계만 펼쳐볼 수 있습니다. 각 수업을 완료하면 이 기기에 학습 기록이 저장되고 진행률에 반영됩니다.</p></aside>
   </div>
 </section>
 <section class="ai-section" id="aiTutor">
