@@ -5,11 +5,11 @@
   const modal=$('settingsModal'), messages=$('aiMessages');
   function read(k){try{return localStorage.getItem(k)||''}catch(e){return ''}}
   function write(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
-  function settings(){return {key:read(KEYS.gemini),model:read(KEYS.model)||'gemini-3.1-flash-lite',token:read(KEYS.token),gist:read(KEYS.gist)}}
+  function settings(){return {key:read(KEYS.gemini),model:read(KEYS.model)||'gemini-3.5-flash-lite',token:read(KEYS.token),gist:read(KEYS.gist)}}
   function setStatus(msg){$('aiStatus').textContent=msg}
   function showModal(){const s=settings();$('geminiKey').value=s.key;$('geminiModel').value=s.model;$('githubToken').value=s.token;$('gistId').value=s.gist;modal.classList.add('open')}
   function hideModal(){modal.classList.remove('open')}
-  function save(){const ok=[write(KEYS.gemini,$('geminiKey').value.trim()),write(KEYS.model,$('geminiModel').value.trim()||'gemini-3.1-flash-lite'),write(KEYS.token,$('githubToken').value.trim()),write(KEYS.gist,$('gistId').value.trim())].every(Boolean);setStatus(ok?'설정이 이 기기에 저장되었습니다.':'브라우저 저장 공간을 확인해 주세요.');return ok}
+  function save(){const ok=[write(KEYS.gemini,$('geminiKey').value.trim()),write(KEYS.model,$('geminiModel').value.trim()||'gemini-3.5-flash-lite'),write(KEYS.token,$('githubToken').value.trim()),write(KEYS.gist,$('gistId').value.trim())].every(Boolean);setStatus(ok?'설정이 이 기기에 저장되었습니다.':'브라우저 저장 공간을 확인해 주세요.');return ok}
   function bubble(text,who){const d=document.createElement('div');d.className='bubble '+who;d.textContent=text;messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d}
   function getStudyData(){let completed=[];try{completed=JSON.parse(localStorage.getItem('japanese-study-completed-days')||'[]')}catch(e){}let extra={};try{extra=JSON.parse(read(KEYS.extra)||'{}')}catch(e){}return {schema:1,updatedAt:new Date().toISOString(),completedDays:completed,extra}}
   function setStudyData(data){if(Array.isArray(data.completedDays))write('japanese-study-completed-days',JSON.stringify(data.completedDays));if(data.extra&&typeof data.extra==='object')write(KEYS.extra,JSON.stringify(data.extra));}

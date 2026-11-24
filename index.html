@@ -73,8 +73,8 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
 </header>
 <main>
 <section class="hero">
-  <div><div class="eyebrow">YOUR JAPANESE JOURNEY</div><h1>매일 조금씩,<br>자연스러운 일본어로.</h1><p class="lead">기초 문자와 문법부터 실제 일본인의 일상 대화까지. 하루씩 배우고, 듣고, 직접 말하면서 6개월의 학습 과정을 쌓아갑니다.</p></div>
-  <div class="hero-panel"><div class="panel-kicker">日本語 · DAILY STUDY</div><div class="panel-title">오늘의 공부를 시작해요.</div><div class="panel-copy">서두르지 않고 한 단계씩. 배운 표현을 실제 대화에서 사용할 수 있도록.</div><div class="panel-tag">6개월 기초 회화 과정</div></div>
+  <div><div class="eyebrow">YOUR JAPANESE JOURNEY</div><h1>매일 조금씩,<br>자연스러운 일본어로.</h1><p class="lead">기초 문자와 문법부터 실제 일본인의 일상 대화까지. 하루씩 배우고, 듣고, 직접 말하면서 1,000일 동안 기초부터 자연스러운 일본어까지 단계적으로 쌓아갑니다.</p></div>
+  <div class="hero-panel"><div class="panel-kicker">日本語 · DAILY STUDY</div><div class="panel-title">오늘의 공부를 시작해요.</div><div class="panel-copy">서두르지 않고 한 단계씩. 배운 표현을 실제 대화에서 사용할 수 있도록.</div><div class="panel-tag">1,000일 통합 일본어 과정</div></div>
 </section>
 <section class="quick-grid" aria-label="빠른 메뉴">
   <a class="quick" href="#roadmap"><div class="quick-icon">📚</div><strong>일본어 수업</strong><span>DAY별 강의와 학습 진도</span></a>
@@ -83,10 +83,10 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
   <a class="quick" href="#live"><div class="quick-icon">▶</div><strong>라이브 번역</strong><span>영상과 번역 기능 연결 준비</span></a>
 </section>
 <section id="roadmap">
-  <div class="section-head"><div><h2>6개월 학습 로드맵</h2><p>대학 어학당 초급 스타일 · 회화 중심</p></div></div>
-  <div class="goal"><div class="goal-mark">✓</div><div><strong>학습 목표</strong><p>6개월 후 일상 대화를 큰 막힘 없이 이어갈 수 있는 수준</p></div></div>
+  <div class="section-head"><div><h2>1,000일 전체 학습 로드맵</h2><p>기초 문자부터 고급 회화·작문까지 · 전체 과정 수록</p></div></div>
+  <div class="goal"><div class="goal-mark">✓</div><div><strong>학습 목표</strong><p>기초부터 고급 회화·독해·작문까지 1,000일에 걸쳐 단계적으로 확장</p></div></div>
   <div class="roadmap-layout">
-    <div class="path" id="roadmapPath"><div class="month">1개월 차 · 기초 세우기</div><p class="muted">수업 목록을 불러오는 중입니다.</p></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px"><input id="lessonSearch" placeholder="DAY·문법·주제 검색" style="flex:1;min-width:180px;padding:12px;border:1px solid #dbe2ec;border-radius:10px"><select id="stageFilter" style="padding:12px;border:1px solid #dbe2ec;border-radius:10px"><option value="0">전체 단계</option><option value="1">STAGE 1 · 일본어 완전 기초</option><option value="2">STAGE 2 · 초급 생활 일본어</option><option value="3">STAGE 3 · 초중급 문장 확장</option><option value="4">STAGE 4 · 중급 문법</option><option value="5">STAGE 5 · 자연스러운 회화</option><option value="6">STAGE 6 · 실전 생활 일본어</option><option value="7">STAGE 7 · 고급 문법</option><option value="8">STAGE 8 · 미디어·사회 일본어</option><option value="9">STAGE 9 · 고급 작문·토론</option><option value="10">STAGE 10 · 자유 구사 통합 실전</option></select></div><div class="path" id="roadmapPath"><div class="month">1개월 차 · 기초 세우기</div><p class="muted">수업 목록을 불러오는 중입니다.</p></div>
     <aside class="side-note"><h3>학습 진행 안내</h3><p>파란색 점은 가장 최근에 추가된 수업을 나타냅니다. 수업 페이지 아래의 ‘이 수업을 완료로 표시’를 누르면 완료 기록이 이 기기에 저장되고, 로드맵의 점과 상태가 바뀝니다.<br><br>새 수업을 추가할 때는 새 DAY 파일과 <b>lessons.js</b>의 수업 목록만 갱신하면 됩니다. 홈페이지 디자인과 index.html은 매번 수정하지 않아도 됩니다.</p></aside>
   </div>
 </section>
@@ -113,74 +113,26 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
 </main>
 <footer class="footer"><span>日本語の勉強 · 나만의 일본어 학습 공간</span><span>하루씩, 꾸준하게.</span></footer>
 </div>
-<script src="lessons.js"></script>
+<script src="lessons.js"></script><script src="lessons-data.js"></script>
 <script>
 (function(){
-  const path=document.getElementById('roadmapPath');
-  const lessons=Array.isArray(window.JAPANESE_LESSONS)?window.JAPANESE_LESSONS:[];
-  const key='japanese-study-completed-days';
-  let completed=[];
-  try{
-    const saved=localStorage.getItem(key);
-    if(saved===null){completed=window.JAPANESE_INITIAL_COMPLETED||[];localStorage.setItem(key,JSON.stringify(completed));}
-    else completed=JSON.parse(saved);
-  }catch(e){completed=window.JAPANESE_INITIAL_COMPLETED||[];}
-  if(!Array.isArray(completed))completed=[];
-  const byDay=new Map(lessons.map(x=>[Number(x.day),x]));
-  const currentDay=lessons.reduce((m,x)=>Math.max(m,Number(x.day)||0),0);
-  function el(tag,cls,txt){const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n;}
-  function addMonth(label){path.appendChild(el('div','month',label));}
-  function addLesson(day){
-    const item=byDay.get(day);
-    if(!item){
-      const node=el('div','node locked');node.appendChild(el('div','dot'));
-      const card=el('div','card');const main=el('div','card-main');
-      main.appendChild(el('div','label','DAY '+String(day).padStart(2,'0')));
-      main.appendChild(el('h3','',day<=7?'1주차 누적 복습':'다음 학습 단계'));
-      main.appendChild(el('p','',day<=7?'복습 + 짧은 자기소개 완성':'기존 6개월 로드맵에 따라 순차 진행'));
-      card.appendChild(main);card.appendChild(el('span','lock','준비 중'));node.appendChild(card);path.appendChild(node);return;
-    }
-    const done=completed.includes(day),current=day===currentDay&&!done;
-    const node=el('div','node '+(done?'done':current?'current':'available'));node.appendChild(el('div','dot'));
-    const card=el('a','card');card.href=item.file;
-    const main=el('div','card-main');
-    main.appendChild(el('div','label',`DAY ${String(day).padStart(2,'0')}${current?' · 오늘의 수업':done?' · 완료':''}`));
-    main.appendChild(el('h3','',item.title));main.appendChild(el('p','',item.summary));
-    card.appendChild(main);card.appendChild(el('span','status',done?'완료':current?'학습 중':'다시 보기'));
-    node.appendChild(card);path.appendChild(node);
-  }
-  path.innerHTML='';
-  addMonth('1개월 차 · 기초 세우기');
-  for(let d=1;d<=7;d++)addLesson(d);
-  addMonth('2개월 차 · 문장 늘리기');
-  const stage2=[
-    ['2주차','장소와 존재','あります / います · どこですか'],
-    ['3~4주차','시간과 일과','時間 · 一日の生活 · ます형 동사']
-  ];
-  for(const s of stage2){
-    const node=el('div','node locked');node.appendChild(el('div','dot'));
-    const card=el('div','card'),main=el('div','card-main');
-    main.appendChild(el('div','label',s[0]));main.appendChild(el('h3','',s[1]));main.appendChild(el('p','',s[2]));
-    card.appendChild(main);card.appendChild(el('span','lock','준비 중'));node.appendChild(card);path.appendChild(node);
-  }
-  addMonth('3~6개월 · 회화 확장');
-  const stage3=[
-    ['중반','동사와 희망 표현','好きです · たいです · 과거형'],
-    ['후반','일상 회화 확장','의견 말하기 · 간단한 이유 · 자연스러운 주고받기']
-  ];
-  for(const s of stage3){
-    const node=el('div','node locked');node.appendChild(el('div','dot'));
-    const card=el('div','card'),main=el('div','card-main');
-    main.appendChild(el('div','label',s[0]));main.appendChild(el('h3','',s[1]));main.appendChild(el('p','',s[2]));
-    card.appendChild(main);card.appendChild(el('span','lock','준비 중'));node.appendChild(card);path.appendChild(node);
-  }
+ const path=document.getElementById('roadmapPath'), lessons=window.JAPANESE_LESSONS||[], search=document.getElementById('lessonSearch'), filter=document.getElementById('stageFilter');
+ const stageNames=['일본어 완전 기초','초급 생활 일본어','초중급 문장 확장','중급 문법','자연스러운 회화','실전 생활 일본어','고급 문법','미디어·사회 일본어','고급 작문·토론','자유 구사 통합 실전'];
+ let completed=[];try{completed=JSON.parse(localStorage.getItem('japanese-study-completed-days')||'[]')}catch(e){}
+ function render(){path.innerHTML='';const q=(search.value||'').trim().toLowerCase(),st=Number(filter.value)||0;let shown=0,lastStage=0;
+  lessons.forEach(x=>{if(st&&x.stage!==st)return;const hay=('DAY '+x.day+' '+x.title+' '+x.summary+' '+(stageNames[x.stage-1]||'')).toLowerCase();if(q&&!hay.includes(q))return;
+   if(x.stage!==lastStage){const m=document.createElement('div');m.className='month';m.textContent='STAGE '+x.stage+' · '+stageNames[x.stage-1]+' · DAY '+String((x.stage-1)*100+1).padStart(3,'0')+'–'+String(x.stage*100).padStart(3,'0');path.append(m);lastStage=x.stage}
+   const done=completed.includes(x.day),node=document.createElement('div');node.className='node '+(done?'done':'available');node.append(document.createElement('div'));node.firstChild.className='dot';const a=document.createElement('a');a.className='card';a.href=x.file;const main=document.createElement('div');main.className='card-main';const label=document.createElement('div');label.className='label';label.textContent='DAY '+String(x.day).padStart(3,'0')+(done?' · 완료':'');const h=document.createElement('h3');h.textContent=x.title;const p=document.createElement('p');p.textContent=x.summary;main.append(label,h,p);const status=document.createElement('span');status.className='status';status.textContent=done?'완료':'학습하기';a.append(main,status);node.append(a);path.append(node);shown++;
+  });if(!shown){const p=document.createElement('p');p.className='muted';p.textContent='검색 결과가 없습니다.';path.append(p)}
+ }
+ search.addEventListener('input',render);filter.addEventListener('change',render);render();
 })();
 </script>
 
 <div class="settings-modal" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
  <div class="settings-card"><h2 id="settingsTitle">개인 학습 설정</h2><p class="intro">API 키와 GitHub 토큰은 이 브라우저의 로컬 저장소에만 저장됩니다. 코드나 Gist 백업 파일에는 포함하지 않습니다.</p>
   <div class="field"><label for="geminiKey">Gemini API Key</label><input id="geminiKey" type="password" autocomplete="off" placeholder="AIza..."/><small>Google AI Studio에서 발급한 키를 입력하세요.</small></div>
-  <div class="field"><label for="geminiModel">Gemini 모델</label><input id="geminiModel" value="gemini-3.1-flash-lite"/><small>기본값은 무료 사용 가능 여부와 속도를 고려한 모델입니다. 계정에서 사용할 수 있는 모델명으로 변경할 수 있습니다.</small></div>
+  <div class="field"><label for="geminiModel">Gemini 모델</label><input id="geminiModel" value="gemini-3.5-flash-lite"/><small>기본값은 현재 연결 테스트에서 사용한 모델입니다. 계정에서 사용할 수 있는 모델명으로 변경할 수 있습니다.</small></div>
   <div class="field"><label for="githubToken">GitHub Fine-grained Personal Access Token</label><input id="githubToken" type="password" autocomplete="off" placeholder="github_pat_..."/><small>Gist 권한만 부여한 토큰을 권장합니다. 만료일을 설정하세요.</small></div>
   <div class="field"><label for="gistId">Gist ID</label><input id="gistId" autocomplete="off" placeholder="Gist 주소의 마지막 ID 부분"/><small>Gist 주소가 https://gist.github.com/계정/여기ID 라면 마지막 부분만 입력합니다.</small></div>
   <div class="settings-actions"><button id="saveSettings" type="button">설정 저장</button><button id="testGemini" class="secondary" type="button">Gemini 연결 테스트</button><button id="testGist" class="secondary" type="button">Gist 연결 테스트</button><button id="closeSettings" class="secondary" type="button">닫기</button></div>
