@@ -64,6 +64,24 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
 @media(max-width:700px){.action-nav{gap:5px}.nav-button{padding:7px 9px;font-size:11px}.ai-panel{padding:13px}.ai-compose{align-items:stretch}.ai-compose button{padding:0 12px}}
 
 
+/* iPad landscape: study roadmap left, tall Gemini chat right */
+.study-workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:start}
+.ai-section{margin-top:38px;min-width:0}
+@media(min-width:900px){
+  .page{max-width:1320px}
+  .study-workspace{grid-template-columns:minmax(0,1fr) minmax(330px,390px);gap:26px}
+  .ai-section{margin-top:0;position:sticky;top:14px}
+  .ai-section>.section-head{margin-bottom:12px}
+  .ai-section>.section-head h2{font-size:19px}
+  .ai-panel{padding:15px;display:flex;flex-direction:column;min-height: min(78vh,820px)}
+  .ai-top{align-items:flex-start;flex-direction:column;gap:4px}
+  .ai-messages{height:min(62vh,660px);max-height:none;min-height:320px;flex:1}
+  .ai-compose{align-items:flex-end}
+  .ai-compose textarea{min-height:62px;max-height:180px}
+}
+@media(max-width:899px){.study-workspace{display:flex;flex-direction:column}.ai-section{width:100%;margin-top:34px}}
+@media(max-width:700px){.ai-messages{max-height:360px}}
+
 /* Compact 1,000-day roadmap */
 .roadmap-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 14px}
 .roadmap-tools-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -122,8 +140,8 @@ button,a,input,textarea{touch-action:manipulation;-webkit-tap-highlight-color:tr
   <a class="quick" href="#roadmap"><div class="quick-icon">📚</div><strong>일본어 수업</strong><span>DAY별 강의와 학습 진도</span></a>
   <a class="quick" href="#tools"><div class="quick-icon">🗂️</div><strong>단어장 · 누적 복습</strong><span>배운 단어를 다시 확인</span></a>
   <a class="quick" href="#tools"><div class="quick-icon">🎧</div><strong>듣기 · 발음</strong><span>일본어 음성으로 연습</span></a>
-  <a class="quick" href="#live"><div class="quick-icon">▶</div><strong>라이브 번역</strong><span>영상과 번역 기능 연결 준비</span></a>
 </section>
+<div class="study-workspace">
 <section id="roadmap">
   <div class="section-head"><div><h2>1,000일 전체 학습 로드맵</h2><p>기초 문자부터 고급 회화·작문까지 · 전체 과정 수록</p></div></div>
   <div class="goal"><div class="goal-mark">✓</div><div><strong>학습 목표</strong><p>기초부터 고급 회화·독해·작문까지 1,000일에 걸쳐 단계적으로 확장</p></div></div>
@@ -145,6 +163,7 @@ button,a,input,textarea{touch-action:manipulation;-webkit-tap-highlight-color:tr
     <form class="ai-compose" id="aiForm"><textarea id="aiInput" placeholder="일본어 질문이나 연습하고 싶은 상황을 입력하세요."></textarea><button type="submit" id="aiSend">보내기</button></form>
   </div>
 </section>
+</div>
 <section class="tool-section" id="tools">
   <div class="section-head"><div><h2>학습 도구</h2><p>수업과 함께 사용할 기능을 모아두는 공간</p></div></div>
   <div class="tool-grid">
@@ -152,10 +171,7 @@ button,a,input,textarea{touch-action:manipulation;-webkit-tap-highlight-color:tr
     <article class="tool"><div class="tool-head"><div class="tool-icon">🎧</div><h3>발음 · 듣기 연습</h3></div><p>일본어 음성 자료와 발음 확인, 문장 듣기 연습을 연결합니다.</p><span class="soon-label">구성 예정</span></article>
   </div>
 </section>
-<section class="tool-section" id="live">
-  <div class="section-head"><div><h2>라이브 듣기 번역</h2><p>기존 Swift 앱과 연결하는 공간</p></div></div>
-  <article class="tool soon"><div class="tool-head"><div class="tool-icon">▶</div><h3>영상 + 실시간 번역 자막</h3></div><p>유튜브 영상과 일본어 원문, 한국어 번역, 번역 기록을 한 화면에서 확인하는 통합형 화면을 목표로 합니다. 현재는 메뉴와 구조만 마련되어 있으며 실제 번역 기능은 아직 연결되지 않았습니다.</p><span class="soon-label">개발 준비 중</span></article>
-</section>
+
 </main>
 <footer class="footer"><span>日本語の勉強 · 나만의 일본어 학습 공간</span><span>하루씩, 꾸준하게.</span></footer>
 </div>
