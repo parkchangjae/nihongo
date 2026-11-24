@@ -13,6 +13,8 @@
   let kokoroPromise = null;
   let audioContext = null;
   let activeSource = null;
+  let activeAudio = null;
+  let activeObjectUrl = null;
   let activeButton = null;
   let loadMessage = '';
 
@@ -26,10 +28,9 @@
   }
 
   function stop() {
-    if (activeSource) {
-      try { activeSource.stop(); } catch (_) {}
-      activeSource = null;
-    }
+    if (activeSource) { try { activeSource.stop(); } catch (_) {} activeSource = null; }
+    if (activeAudio) { try { activeAudio.pause(); activeAudio.removeAttribute('src'); activeAudio.load(); } catch (_) {} activeAudio = null; }
+    if (activeObjectUrl) { try { URL.revokeObjectURL(activeObjectUrl); } catch (_) {} activeObjectUrl = null; }
     if (activeButton) setButtonState(activeButton, 'idle');
     activeButton = null;
   }
@@ -137,23 +138,37 @@
         if (!(blob instanceof Blob) || !blob.size) throw new Error('Kokoro가 음성 파일을 만들지 못했습니다.');
         await writeCachedBlob(text, blob);
       }
-      const bytes = await blob.arrayBuffer();
-      const buffer = await audioContext.decodeAudioData(bytes.slice(0));
-      const source = audioContext.createBufferSource();
-      source.buffer = buffer;
-      source.connect(audioContext.destination);
-      activeSource = source;
-      source.onended = () => {
-        if (activeSource === source) activeSource = null;
+      // Use the playback path documented by kokoro-js-jp. HTMLAudioElement is
+      // more reliable than decoding the generated Blob through WebAudio on iOS Safari.
+      activeObjectUrl = URL.createObjectURL(blob);
+      const audio = new Audio();
+      activeAudio = audio;
+      audio.preload = 'auto';
+      audio.src = activeObjectUrl;
+      audio.addEventListener('ended', () => {
+        if (activeAudio === audio) activeAudio = null;
+        if (activeObjectUrl) { URL.revokeObjectURL(activeObjectUrl); activeObjectUrl = null; }
         if (activeButton === button) { setButtonState(button, 'idle'); activeButton = null; }
-      };
+      }, { once: true });
+      audio.addEventListener('error', () => {
+        const detail = audio.error ? ` (미디어 오류 ${audio.error.code})` : '';
+        setButtonState(button, 'idle');
+        if (activeAudio === audio) activeAudio = null;
+        if (activeObjectUrl) { URL.revokeObjectURL(activeObjectUrl); activeObjectUrl = null; }
+        if (activeButton === button) activeButton = null;
+        alert('음성 파일 재생에 실패했습니다.' + detail + '\nSafari를 최신 버전으로 업데이트한 뒤 다시 시도해 주세요.');
+      }, { once: true });
       setButtonState(button, 'playing');
-      source.start(0);
+      try {
+        await audio.play();
+      } catch (playError) {
+        throw new Error('Safari가 오디오 재생을 차단했습니다: ' + (playError.message || playError));
+      }
     } catch (error) {
       setButtonState(button, 'idle');
       activeButton = null;
       const message = error && error.message ? error.message : String(error);
-      alert('Kokoro 음성 생성 실패\n' + message + '\n\n인터넷 연결과 Safari 최신 버전을 확인해 주세요.');
+      alert('Kokoro 음성 처리 실패\n' + message + '\n\n인터넷 연결, 모델 다운로드, Safari 설정을 확인해 주세요.');
     }
   }
 
