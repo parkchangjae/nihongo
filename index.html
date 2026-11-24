@@ -63,6 +63,23 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
 .ai-section{margin-top:38px}.ai-panel{background:#fff;border:1px solid var(--line);border-radius:17px;padding:18px}.ai-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.ai-top h3{font-size:15px;margin:0}.ai-status{font-size:11px;color:var(--muted)}.ai-messages{min-height:150px;max-height:360px;overflow:auto;background:#fafaf9;border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}.bubble{max-width:92%;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.bubble.user{align-self:flex-end;background:#eaf1ff}.bubble.ai{align-self:flex-start;background:#fff;border:1px solid var(--line)}.ai-compose{display:flex;gap:8px;margin-top:10px}.ai-compose textarea{flex:1;min-width:0;min-height:48px;max-height:130px;resize:vertical;border:1px solid var(--line);border-radius:11px;padding:11px;font:inherit;font-size:13px}.ai-compose button,.settings-actions button{border:0;border-radius:10px;padding:0 16px;background:#202b3b;color:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.settings-modal{position:fixed;inset:0;background:rgba(15,23,42,.48);z-index:1000;display:none;align-items:center;justify-content:center;padding:16px}.settings-modal.open{display:flex}.settings-card{width:min(560px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.2)}.settings-card h2{font-size:20px;margin:0 0 5px}.settings-card .intro{font-size:12px;color:var(--muted);line-height:1.65;margin:0 0 16px}.field{display:flex;flex-direction:column;gap:6px;margin:13px 0}.field label{font-size:12px;font-weight:750}.field input{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;font:inherit;font-size:13px}.field small{font-size:11px;color:var(--muted);line-height:1.5}.settings-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.settings-actions button{min-height:40px}.settings-actions .secondary{background:#f1f2f3;color:#222}.privacy-note{background:#fff8e8;border:1px solid #f0dfb5;border-radius:10px;padding:10px;font-size:11px;line-height:1.6;color:#6e5420;margin-top:14px}
 @media(max-width:700px){.action-nav{gap:5px}.nav-button{padding:7px 9px;font-size:11px}.ai-panel{padding:13px}.ai-compose{align-items:stretch}.ai-compose button{padding:0 12px}}
 
+
+/* Compact 1,000-day roadmap */
+.roadmap-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 14px}
+.roadmap-tools-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.compact-btn,.stage-toggle{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:9px 12px;font:inherit;font-size:12px;cursor:pointer}
+.compact-btn:hover,.stage-toggle:hover{border-color:#b8c7e8}
+.roadmap-count{font-size:11px;color:var(--muted)}
+.search-wrap{display:none;margin:0 0 14px}.search-wrap.open{display:block}
+.search-wrap input{width:100%;padding:12px 13px;border:1px solid #dbe2ec;border-radius:10px;font:inherit;font-size:13px;background:#fff}
+.stage-list{display:grid;grid-template-columns:1fr;gap:9px}
+.stage-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.stage-toggle{display:flex;width:100%;align-items:center;justify-content:space-between;text-align:left;border:0;border-radius:0;padding:14px 15px;background:transparent;gap:12px}
+.stage-toggle-main{min-width:0}.stage-kicker{display:block;font-size:10px;color:var(--blue);font-weight:800;letter-spacing:.08em;margin-bottom:3px}.stage-name{display:block;font-size:14px;font-weight:750;letter-spacing:-.02em}.stage-meta{display:block;font-size:11px;color:var(--muted);margin-top:3px}.stage-right{display:flex;align-items:center;gap:10px;flex:0 0 auto}.stage-progress{font-size:11px;color:var(--muted);white-space:nowrap}.stage-chevron{font-size:16px;color:#888;transition:transform .15s}.stage-card.open .stage-chevron{transform:rotate(180deg)}
+.stage-progress-track{height:3px;background:#f0f0ed}.stage-progress-fill{height:100%;background:var(--green);width:0}
+.stage-days{display:none;padding:0 12px 12px}.stage-card.open .stage-days{display:block}.day-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 11px;border-top:1px solid #f0f0ed;text-decoration:none;border-radius:7px}.day-row:hover{background:#f8f9fb}.day-row-label{font-size:10px;color:var(--blue);font-weight:800;white-space:nowrap}.day-row-title{font-size:13px;font-weight:650;flex:1;min-width:0}.day-row-summary{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38%}.day-row-status{font-size:10px;color:var(--muted);white-space:nowrap}.day-row.done .day-row-label,.day-row.done .day-row-status{color:var(--green)}
+@media(max-width:700px){.roadmap-layout{display:block}.side-note{display:none}.stage-toggle{padding:13px 12px}.day-row-summary{display:none}.roadmap-count{font-size:10px}}
+
 </style>
 </head>
 <body>
@@ -86,8 +103,12 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
   <div class="section-head"><div><h2>1,000일 전체 학습 로드맵</h2><p>기초 문자부터 고급 회화·작문까지 · 전체 과정 수록</p></div></div>
   <div class="goal"><div class="goal-mark">✓</div><div><strong>학습 목표</strong><p>기초부터 고급 회화·독해·작문까지 1,000일에 걸쳐 단계적으로 확장</p></div></div>
   <div class="roadmap-layout">
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px"><input id="lessonSearch" placeholder="DAY·문법·주제 검색" style="flex:1;min-width:180px;padding:12px;border:1px solid #dbe2ec;border-radius:10px"><select id="stageFilter" style="padding:12px;border:1px solid #dbe2ec;border-radius:10px"><option value="0">전체 단계</option><option value="1">STAGE 1 · 일본어 완전 기초</option><option value="2">STAGE 2 · 초급 생활 일본어</option><option value="3">STAGE 3 · 초중급 문장 확장</option><option value="4">STAGE 4 · 중급 문법</option><option value="5">STAGE 5 · 자연스러운 회화</option><option value="6">STAGE 6 · 실전 생활 일본어</option><option value="7">STAGE 7 · 고급 문법</option><option value="8">STAGE 8 · 미디어·사회 일본어</option><option value="9">STAGE 9 · 고급 작문·토론</option><option value="10">STAGE 10 · 자유 구사 통합 실전</option></select></div><div class="path" id="roadmapPath"><div class="month">1개월 차 · 기초 세우기</div><p class="muted">수업 목록을 불러오는 중입니다.</p></div>
-    <aside class="side-note"><h3>학습 진행 안내</h3><p>파란색 점은 가장 최근에 추가된 수업을 나타냅니다. 수업 페이지 아래의 ‘이 수업을 완료로 표시’를 누르면 완료 기록이 이 기기에 저장되고, 로드맵의 점과 상태가 바뀝니다.<br><br>새 수업을 추가할 때는 새 DAY 파일과 <b>lessons.js</b>의 수업 목록만 갱신하면 됩니다. 홈페이지 디자인과 index.html은 매번 수정하지 않아도 됩니다.</p></aside>
+    <div>
+      <div class="roadmap-tools"><div class="roadmap-tools-left"><button class="compact-btn" id="toggleSearch" type="button">⌕ 검색</button><span class="roadmap-count" id="roadmapCount">전체 1,000일 · 10단계</span></div><button class="compact-btn" id="collapseStages" type="button">모두 접기</button></div>
+      <div class="search-wrap" id="searchWrap"><input id="lessonSearch" type="search" placeholder="DAY 번호, 문법, 주제 검색"></div>
+      <div class="stage-list" id="roadmapPath"><p class="muted">수업 목록을 불러오는 중입니다.</p></div>
+    </div>
+    <aside class="side-note"><h3>학습 진행 안내</h3><p>10개 단계로 나누어 필요한 단계만 펼쳐볼 수 있습니다. 각 수업을 완료하면 이 기기에 학습 기록이 저장되고 진행률에 반영됩니다.</p></aside>
   </div>
 </section>
 <section class="ai-section" id="aiTutor">
@@ -116,16 +137,21 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
 <script src="lessons.js"></script><script src="lessons-data.js"></script>
 <script>
 (function(){
- const path=document.getElementById('roadmapPath'), lessons=window.JAPANESE_LESSONS||[], search=document.getElementById('lessonSearch'), filter=document.getElementById('stageFilter');
- const stageNames=['일본어 완전 기초','초급 생활 일본어','초중급 문장 확장','중급 문법','자연스러운 회화','실전 생활 일본어','고급 문법','미디어·사회 일본어','고급 작문·토론','자유 구사 통합 실전'];
+ const path=document.getElementById('roadmapPath'), lessons=window.JAPANESE_LESSONS||[], data=window.JAPANESE_LESSON_DATA||[], search=document.getElementById('lessonSearch'), searchWrap=document.getElementById('searchWrap'), count=document.getElementById('roadmapCount');
+ const names=['일본어 완전 기초','초급 생활 일본어','초중급 문장 확장','중급 문법','자연스러운 회화','실전 생활 일본어','고급 문법','미디어·사회 일본어','고급 작문·토론','자유 구사 통합 실전'];
  let completed=[];try{completed=JSON.parse(localStorage.getItem('japanese-study-completed-days')||'[]')}catch(e){}
- function render(){path.innerHTML='';const q=(search.value||'').trim().toLowerCase(),st=Number(filter.value)||0;let shown=0,lastStage=0;
-  lessons.forEach(x=>{if(st&&x.stage!==st)return;const hay=('DAY '+x.day+' '+x.title+' '+x.summary+' '+(stageNames[x.stage-1]||'')).toLowerCase();if(q&&!hay.includes(q))return;
-   if(x.stage!==lastStage){const m=document.createElement('div');m.className='month';m.textContent='STAGE '+x.stage+' · '+stageNames[x.stage-1]+' · DAY '+String((x.stage-1)*100+1).padStart(3,'0')+'–'+String(x.stage*100).padStart(3,'0');path.append(m);lastStage=x.stage}
-   const done=completed.includes(x.day),node=document.createElement('div');node.className='node '+(done?'done':'available');node.append(document.createElement('div'));node.firstChild.className='dot';const a=document.createElement('a');a.className='card';a.href=x.file;const main=document.createElement('div');main.className='card-main';const label=document.createElement('div');label.className='label';label.textContent='DAY '+String(x.day).padStart(3,'0')+(done?' · 완료':'');const h=document.createElement('h3');h.textContent=x.title;const p=document.createElement('p');p.textContent=x.summary;main.append(label,h,p);const status=document.createElement('span');status.className='status';status.textContent=done?'완료':'학습하기';a.append(main,status);node.append(a);path.append(node);shown++;
-  });if(!shown){const p=document.createElement('p');p.className='muted';p.textContent='검색 결과가 없습니다.';path.append(p)}
+ let openedStage=0;
+ function searchable(x){const d=data[x.day-1]||{};return ('DAY '+x.day+' '+x.title+' '+x.summary+' '+names[x.stage-1]+' '+JSON.stringify(d.grammar||'')+' '+JSON.stringify(d.vocabulary||'')+' '+JSON.stringify(d.objective||'')).toLowerCase()}
+ function render(){path.innerHTML='';const q=(search.value||'').trim().toLowerCase();const filtered=lessons.filter(x=>!q||searchable(x).includes(q));count.textContent=q?`검색 결과 ${filtered.length}개`:`전체 ${lessons.length.toLocaleString()}일 · 10단계`;
+  const groups=Array.from({length:10},(_,i)=>({stage:i+1,items:filtered.filter(x=>x.stage===i+1)})).filter(g=>g.items.length);
+  if(!groups.length){path.innerHTML='<p class="muted">검색 결과가 없습니다.</p>';return}
+  groups.forEach(g=>{const all=lessons.filter(x=>x.stage===g.stage),done=all.filter(x=>completed.includes(x.day)).length,pct=all.length?Math.round(done/all.length*100):0;const card=document.createElement('section');card.className='stage-card'+((q||openedStage===g.stage)?' open':'');
+   const btn=document.createElement('button');btn.type='button';btn.className='stage-toggle';btn.setAttribute('aria-expanded',String(q||openedStage===g.stage));const main=document.createElement('span');main.className='stage-toggle-main';const kicker=document.createElement('span');kicker.className='stage-kicker';kicker.textContent='STAGE '+String(g.stage).padStart(2,'0')+' · DAY '+String((g.stage-1)*100+1).padStart(3,'0')+'–'+String(g.stage*100).padStart(3,'0');const name=document.createElement('span');name.className='stage-name';name.textContent=names[g.stage-1];const meta=document.createElement('span');meta.className='stage-meta';meta.textContent=q?`검색된 수업 ${g.items.length}개`:'100일 과정 · 눌러서 수업 목록 보기';main.append(kicker,name,meta);const right=document.createElement('span');right.className='stage-right';const prog=document.createElement('span');prog.className='stage-progress';prog.textContent=`${done}/100 완료`;const chev=document.createElement('span');chev.className='stage-chevron';chev.textContent='⌄';right.append(prog,chev);btn.append(main,right);btn.addEventListener('click',()=>{openedStage=openedStage===g.stage?0:g.stage;render()});card.append(btn);const track=document.createElement('div');track.className='stage-progress-track';const fill=document.createElement('div');fill.className='stage-progress-fill';fill.style.width=pct+'%';track.append(fill);card.append(track);
+   const days=document.createElement('div');days.className='stage-days';g.items.forEach(x=>{const a=document.createElement('a');a.className='day-row'+(completed.includes(x.day)?' done':'');a.href=x.file;const label=document.createElement('span');label.className='day-row-label';label.textContent='DAY '+String(x.day).padStart(3,'0');const title=document.createElement('span');title.className='day-row-title';title.textContent=x.title;const summary=document.createElement('span');summary.className='day-row-summary';summary.textContent=x.summary||'';const status=document.createElement('span');status.className='day-row-status';status.textContent=completed.includes(x.day)?'✓ 완료':'학습하기';a.append(label,title,summary,status);days.append(a)});card.append(days);path.append(card);
+  });
  }
- search.addEventListener('input',render);filter.addEventListener('change',render);render();
+ document.getElementById('toggleSearch').addEventListener('click',()=>{searchWrap.classList.toggle('open');if(searchWrap.classList.contains('open'))search.focus();else{search.value='';render()}});
+ document.getElementById('collapseStages').addEventListener('click',()=>{openedStage=0;search.value='';render()});search.addEventListener('input',render);render();
 })();
 </script>
 
