@@ -57,13 +57,19 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
 .footer{border-top:1px solid var(--line);margin-top:48px;padding-top:18px;color:#888;font-size:11px;display:flex;justify-content:space-between;gap:12px}
 @media(max-width:700px){.page{padding:17px 15px 48px}.topbar{margin-bottom:30px}.nav{gap:12px;font-size:11px}.hero{grid-template-columns:1fr;gap:18px}.hero-panel{min-height:145px}.quick-grid{grid-template-columns:repeat(2,1fr);gap:9px;margin:22px 0 34px}.quick{min-height:100px;padding:13px}.tool-grid{grid-template-columns:1fr}.section-head h2{font-size:20px}}
 @media(min-width:701px){.roadmap-layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:26px;align-items:start}.side-note{position:sticky;top:18px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px}.side-note h3{font-size:14px;margin:0 0 8px}.side-note p{font-size:12px;line-height:1.7;color:var(--muted);margin:0}}
+
+/* AI + cloud sync upgrade */
+.action-nav{display:flex;gap:8px;align-items:center}.nav-button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;font:inherit;font-size:12px;color:var(--ink);cursor:pointer}.nav-button.primary{background:#202b3b;color:#fff;border-color:#202b3b}
+.ai-section{margin-top:38px}.ai-panel{background:#fff;border:1px solid var(--line);border-radius:17px;padding:18px}.ai-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.ai-top h3{font-size:15px;margin:0}.ai-status{font-size:11px;color:var(--muted)}.ai-messages{min-height:150px;max-height:360px;overflow:auto;background:#fafaf9;border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}.bubble{max-width:92%;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.bubble.user{align-self:flex-end;background:#eaf1ff}.bubble.ai{align-self:flex-start;background:#fff;border:1px solid var(--line)}.ai-compose{display:flex;gap:8px;margin-top:10px}.ai-compose textarea{flex:1;min-width:0;min-height:48px;max-height:130px;resize:vertical;border:1px solid var(--line);border-radius:11px;padding:11px;font:inherit;font-size:13px}.ai-compose button,.settings-actions button{border:0;border-radius:10px;padding:0 16px;background:#202b3b;color:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.settings-modal{position:fixed;inset:0;background:rgba(15,23,42,.48);z-index:1000;display:none;align-items:center;justify-content:center;padding:16px}.settings-modal.open{display:flex}.settings-card{width:min(560px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.2)}.settings-card h2{font-size:20px;margin:0 0 5px}.settings-card .intro{font-size:12px;color:var(--muted);line-height:1.65;margin:0 0 16px}.field{display:flex;flex-direction:column;gap:6px;margin:13px 0}.field label{font-size:12px;font-weight:750}.field input{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;font:inherit;font-size:13px}.field small{font-size:11px;color:var(--muted);line-height:1.5}.settings-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.settings-actions button{min-height:40px}.settings-actions .secondary{background:#f1f2f3;color:#222}.privacy-note{background:#fff8e8;border:1px solid #f0dfb5;border-radius:10px;padding:10px;font-size:11px;line-height:1.6;color:#6e5420;margin-top:14px}
+@media(max-width:700px){.action-nav{gap:5px}.nav-button{padding:7px 9px;font-size:11px}.ai-panel{padding:13px}.ai-compose{align-items:stretch}.ai-compose button{padding:0 12px}}
+
 </style>
 </head>
 <body>
 <div class="page">
 <header class="topbar">
   <a class="brand" href="index.html"><span class="brand-mark">日</span><span>日本語の勉強<small>JAPANESE STUDY</small></span></a>
-  <nav class="nav" aria-label="주요 메뉴"><a href="#roadmap">학습 로드맵</a><a href="#tools">학습 도구</a></nav>
+  <div class="action-nav"><nav class="nav" aria-label="주요 메뉴"><a href="#roadmap">학습 로드맵</a><a href="#aiTutor">AI 선생님</a></nav><button class="nav-button" id="openSettings">⚙ 설정</button></div>
 </header>
 <main>
 <section class="hero">
@@ -82,6 +88,15 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
   <div class="roadmap-layout">
     <div class="path" id="roadmapPath"><div class="month">1개월 차 · 기초 세우기</div><p class="muted">수업 목록을 불러오는 중입니다.</p></div>
     <aside class="side-note"><h3>학습 진행 안내</h3><p>파란색 점은 가장 최근에 추가된 수업을 나타냅니다. 수업 페이지 아래의 ‘이 수업을 완료로 표시’를 누르면 완료 기록이 이 기기에 저장되고, 로드맵의 점과 상태가 바뀝니다.<br><br>새 수업을 추가할 때는 새 DAY 파일과 <b>lessons.js</b>의 수업 목록만 갱신하면 됩니다. 홈페이지 디자인과 index.html은 매번 수정하지 않아도 됩니다.</p></aside>
+  </div>
+</section>
+<section class="ai-section" id="aiTutor">
+  <div class="section-head"><div><h2>Gemini AI 일본어 선생님</h2><p>문법 설명 · 자연스러운 표현 · 회화 연습 · 작문 첨삭</p></div></div>
+  <div class="ai-panel"><div class="ai-top"><h3>日本語パートナー</h3><span class="ai-status" id="aiStatus">설정에서 Gemini API 키를 연결하세요.</span></div>
+    <div class="ai-messages" id="aiMessages"><div class="bubble ai">こんにちは！ 일본어 공부를 도와드릴게요. 설정에서 Gemini API 키를 저장한 뒤 질문해 주세요.
+
+예: 「は」と「が」의 차이를 초보자도 이해하게 설명해 줘.</div></div>
+    <form class="ai-compose" id="aiForm"><textarea id="aiInput" placeholder="일본어 질문이나 연습하고 싶은 상황을 입력하세요."></textarea><button type="submit" id="aiSend">보내기</button></form>
   </div>
 </section>
 <section class="tool-section" id="tools">
@@ -161,5 +176,19 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
   }
 })();
 </script>
+
+<div class="settings-modal" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+ <div class="settings-card"><h2 id="settingsTitle">개인 학습 설정</h2><p class="intro">API 키와 GitHub 토큰은 이 브라우저의 로컬 저장소에만 저장됩니다. 코드나 Gist 백업 파일에는 포함하지 않습니다.</p>
+  <div class="field"><label for="geminiKey">Gemini API Key</label><input id="geminiKey" type="password" autocomplete="off" placeholder="AIza..."/><small>Google AI Studio에서 발급한 키를 입력하세요.</small></div>
+  <div class="field"><label for="geminiModel">Gemini 모델</label><input id="geminiModel" value="gemini-3.1-flash-lite"/><small>기본값은 무료 사용 가능 여부와 속도를 고려한 모델입니다. 계정에서 사용할 수 있는 모델명으로 변경할 수 있습니다.</small></div>
+  <div class="field"><label for="githubToken">GitHub Fine-grained Personal Access Token</label><input id="githubToken" type="password" autocomplete="off" placeholder="github_pat_..."/><small>Gist 권한만 부여한 토큰을 권장합니다. 만료일을 설정하세요.</small></div>
+  <div class="field"><label for="gistId">Gist ID</label><input id="gistId" autocomplete="off" placeholder="Gist 주소의 마지막 ID 부분"/><small>Gist 주소가 https://gist.github.com/계정/여기ID 라면 마지막 부분만 입력합니다.</small></div>
+  <div class="settings-actions"><button id="saveSettings" type="button">설정 저장</button><button id="testGemini" class="secondary" type="button">Gemini 연결 테스트</button><button id="testGist" class="secondary" type="button">Gist 연결 테스트</button><button id="closeSettings" class="secondary" type="button">닫기</button></div>
+  <div class="settings-actions"><button id="syncNow" type="button">지금 Gist에 백업</button><button id="restoreGist" class="secondary" type="button">Gist에서 복원</button></div>
+  <div class="privacy-note">주의: 브라우저에 저장한 API 키와 토큰은 이 기기의 브라우저 데이터에 접근할 수 있는 사람이나 악성 스크립트에 노출될 수 있습니다. 공용 기기에서는 사용하지 마세요. Secret Gist도 완전한 비밀 저장소는 아닙니다. Gemini 무료 등급의 데이터 처리 조건도 확인하고 민감한 개인정보는 입력하지 마세요.</div>
+ </div>
+</div>
+<script src="app.js"></script>
+
 </body>
 </html>
