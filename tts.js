@@ -13,8 +13,12 @@
   let kokoroPromise = null;
   let audioContext = null;
   let activeSource = null;
-  let activeAudio = null;
+  // iOS Safari keeps media permission per audio element. Reuse ONE element.
+  const sharedAudio = new Audio();
+  const SILENT_WAV = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';
+  let audioUnlocked = false;
   let activeObjectUrl = null;
+  let statusNode = null;
   let activeButton = null;
   let loadMessage = '';
 
@@ -27,12 +31,43 @@
     button.setAttribute('aria-label', state === 'playing' ? '음성 정지' : 'Kokoro 일본어 음성 듣기');
   }
 
+  function showStatus(message) {
+    if (!statusNode) {
+      statusNode = document.createElement('div');
+      statusNode.id = 'kokoro-debug-status';
+      statusNode.style.cssText = 'position:fixed;z-index:99999;left:12px;right:12px;bottom:12px;padding:12px 14px;border-radius:12px;background:#17202b;color:#fff;font:13px/1.5 -apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 4px 18px #0005;white-space:pre-wrap;';
+      document.body.appendChild(statusNode);
+    }
+    statusNode.textContent = 'Kokoro 진단: ' + message;
+    statusNode.style.display = 'block';
+  }
+
   function stop() {
-    if (activeSource) { try { activeSource.stop(); } catch (_) {} activeSource = null; }
-    if (activeAudio) { try { activeAudio.pause(); activeAudio.removeAttribute('src'); activeAudio.load(); } catch (_) {} activeAudio = null; }
+    try { sharedAudio.pause(); } catch (_) {}
     if (activeObjectUrl) { try { URL.revokeObjectURL(activeObjectUrl); } catch (_) {} activeObjectUrl = null; }
     if (activeButton) setButtonState(activeButton, 'idle');
     activeButton = null;
+  }
+
+  // Must be called synchronously from the actual tap handler, before any await.
+  function unlockAudioFromGesture() {
+    if (audioUnlocked) return;
+    try {
+      if ('audioSession' in navigator) navigator.audioSession.type = 'playback';
+      sharedAudio.src = SILENT_WAV;
+      sharedAudio.load();
+      const unlock = sharedAudio.play();
+      if (unlock && typeof unlock.then === 'function') {
+        unlock.then(() => {
+          audioUnlocked = true;
+          sharedAudio.pause();
+          try { sharedAudio.currentTime = 0; } catch (_) {}
+          showStatus('오디오 출력 잠금 해제 완료. 음성 모델 준비 중…');
+        }).catch(error => showStatus('오디오 잠금 해제 실패: ' + (error.message || error)));
+      }
+    } catch (error) {
+      showStatus('오디오 초기화 실패: ' + (error.message || error));
+    }
   }
 
   function openDB() {
@@ -118,57 +153,57 @@
 
   async function playText(rawText, button) {
     const text = clean(rawText);
-    if (!text) { alert('재생할 일본어 문장을 찾지 못했습니다.'); return; }
-    if (button && button.dataset.state === 'playing') { stop(); return; }
+    if (!text) { showStatus('재생할 일본어 문장을 찾지 못했습니다.'); return; }
+    if (button && button.dataset.state === 'playing') { stop(); showStatus('재생을 정지했습니다.'); return; }
     stop();
-
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) { alert('이 브라우저는 오디오 재생을 지원하지 않습니다.'); return; }
-    if (!audioContext) audioContext = new AudioCtx();
-    try { await audioContext.resume(); } catch (_) {}
+    // Critical for iPhone Safari: unlock the SAME audio element during the tap,
+    // not a newly-created Audio() after model synthesis has awaited.
+    unlockAudioFromGesture();
 
     activeButton = button;
     setButtonState(button, 'loading');
+    showStatus('1/4 버튼 입력 확인 · 음성 데이터 확인 중…');
     try {
       let blob = await readCachedBlob(text);
-      if (!blob) {
+      if (blob) {
+        showStatus('2/4 저장된 음성 발견 · 재생 준비 중…');
+      } else {
+        showStatus('2/4 Kokoro 엔진 다운로드/초기화 중… 첫 실행은 오래 걸릴 수 있습니다.');
         const tts = await getKokoro();
+        showStatus('3/4 일본어 음성 생성 중…');
         const result = await tts.speak(text, VOICE);
         blob = result.toBlob();
         if (!(blob instanceof Blob) || !blob.size) throw new Error('Kokoro가 음성 파일을 만들지 못했습니다.');
+        showStatus(`3/4 음성 생성 완료 · ${(blob.size / 1024).toFixed(1)} KB · ${blob.type || 'MIME 미지정'}`);
         await writeCachedBlob(text, blob);
       }
-      // Use the playback path documented by kokoro-js-jp. HTMLAudioElement is
-      // more reliable than decoding the generated Blob through WebAudio on iOS Safari.
+
       activeObjectUrl = URL.createObjectURL(blob);
-      const audio = new Audio();
-      activeAudio = audio;
-      audio.preload = 'auto';
-      audio.src = activeObjectUrl;
-      audio.addEventListener('ended', () => {
-        if (activeAudio === audio) activeAudio = null;
+      sharedAudio.pause();
+      sharedAudio.src = activeObjectUrl;
+      sharedAudio.preload = 'auto';
+      sharedAudio.onended = () => {
         if (activeObjectUrl) { URL.revokeObjectURL(activeObjectUrl); activeObjectUrl = null; }
         if (activeButton === button) { setButtonState(button, 'idle'); activeButton = null; }
-      }, { once: true });
-      audio.addEventListener('error', () => {
-        const detail = audio.error ? ` (미디어 오류 ${audio.error.code})` : '';
+        showStatus('재생 완료.');
+      };
+      sharedAudio.onerror = () => {
+        const mediaError = sharedAudio.error;
+        showStatus(`4/4 오디오 디코딩 실패 · 코드 ${mediaError ? mediaError.code : '알 수 없음'} · MIME ${blob.type || '없음'} · ${blob.size} bytes`);
         setButtonState(button, 'idle');
-        if (activeAudio === audio) activeAudio = null;
-        if (activeObjectUrl) { URL.revokeObjectURL(activeObjectUrl); activeObjectUrl = null; }
-        if (activeButton === button) activeButton = null;
-        alert('음성 파일 재생에 실패했습니다.' + detail + '\nSafari를 최신 버전으로 업데이트한 뒤 다시 시도해 주세요.');
-      }, { once: true });
+      };
+      sharedAudio.onloadedmetadata = () => showStatus(`4/4 오디오 파일 확인 · 길이 ${Number.isFinite(sharedAudio.duration) ? sharedAudio.duration.toFixed(2) + '초' : '확인 중'} · 재생 시도…`);
+      sharedAudio.load();
       setButtonState(button, 'playing');
-      try {
-        await audio.play();
-      } catch (playError) {
-        throw new Error('Safari가 오디오 재생을 차단했습니다: ' + (playError.message || playError));
-      }
+      const playPromise = sharedAudio.play();
+      if (playPromise && typeof playPromise.then === 'function') await playPromise;
+      showStatus('재생 시작 확인. 소리가 들리지 않으면 iPhone 볼륨/출력 경로도 확인해 주세요.');
     } catch (error) {
       setButtonState(button, 'idle');
       activeButton = null;
       const message = error && error.message ? error.message : String(error);
-      alert('Kokoro 음성 처리 실패\n' + message + '\n\n인터넷 연결, 모델 다운로드, Safari 설정을 확인해 주세요.');
+      showStatus('오류: ' + message);
+      console.error('[Kokoro TTS]', error);
     }
   }
 
