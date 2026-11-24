@@ -82,6 +82,29 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
 
 
 .gemini-tts-button{display:inline-flex;align-items:center;justify-content:center;gap:5px;margin:6px 0 2px 7px;padding:7px 11px;min-height:34px;border:1px solid #d7e1ee;border-radius:999px;background:#f1f6fc;color:#23466f;font:600 13px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.gemini-tts-button[data-state="loading"]{opacity:.65}.gemini-tts-button[data-state="playing"]{background:#e7eef8;color:#173d72;border-color:#a9bfdc}.dialogue-tts{margin:8px 0 0}
+
+/* Responsive device profiles: iPhone first, iPad/tablet adapts automatically */
+@media (max-width:600px){
+ .page{width:100%;padding:calc(14px + env(safe-area-inset-top)) 14px calc(42px + env(safe-area-inset-bottom))}
+ .topbar{align-items:center;gap:8px;margin-bottom:24px}.brand{font-size:14px}.brand-mark{width:32px;height:32px}
+ .nav{display:none}.action-nav{margin-left:auto}.nav-button{min-height:42px;padding:9px 12px;font-size:12px}
+ .hero{grid-template-columns:1fr;gap:14px;margin-bottom:22px}h1{font-size:clamp(30px,8vw,38px)}.lead{font-size:14px;line-height:1.75}
+ .hero-panel{min-height:132px;padding:18px;border-radius:16px}.panel-title{font-size:20px}
+ .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:18px 0 28px}.quick{min-height:94px;padding:13px;border-radius:13px}
+ .section-head{align-items:flex-start;flex-direction:column;gap:7px}.section-head h2{font-size:20px}
+ .roadmap-tools{align-items:center}.compact-btn{min-height:40px;padding:9px 11px}.stage-toggle{min-height:58px;padding:13px 12px}.stage-name{font-size:14px}.stage-progress{font-size:10px}
+ .day-row{min-height:48px;padding:11px 8px}.day-row-title{font-size:13px}.day-row-status{font-size:10px}
+ .ai-section{margin-top:28px}.ai-panel{padding:12px;border-radius:14px}.ai-top{align-items:flex-start;flex-direction:column;gap:5px}.ai-messages{min-height:130px;max-height:42vh}.bubble{font-size:14px}.ai-compose{display:grid;grid-template-columns:1fr}.ai-compose textarea{font-size:16px;min-height:54px}.ai-compose button{min-height:46px}
+ .settings-modal{align-items:flex-end;padding:0}.settings-card{width:100%;max-height:92dvh;border-radius:20px 20px 0 0;padding:20px 17px calc(18px + env(safe-area-inset-bottom))}.field input{font-size:16px;min-height:46px}.settings-actions button{flex:1 1 42%;min-height:46px;font-size:13px}
+ .footer{flex-direction:column}
+}
+@media (min-width:601px) and (max-width:1100px){
+ .page{max-width:980px;padding:26px 28px 60px}.hero{gap:22px}.roadmap-layout{grid-template-columns:minmax(0,1fr) 230px;gap:18px}
+ .stage-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stage-card{min-width:0}.stage-toggle{padding:13px 12px}.stage-progress{font-size:10px}
+ .ai-panel{padding:20px}.settings-card{max-height:88dvh}
+}
+@media (min-width:1101px){.page{max-width:1120px}.stage-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+button,a,input,textarea{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 </style>
 </head>
 <body>
@@ -144,7 +167,7 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
  let completed=[];try{completed=JSON.parse(localStorage.getItem('japanese-study-completed-days')||'[]')}catch(e){}
  let openedStage=0;
  function searchable(x){const d=data[x.day-1]||{};return ('DAY '+x.day+' '+x.title+' '+x.summary+' '+names[x.stage-1]+' '+JSON.stringify(d.grammar||'')+' '+JSON.stringify(d.vocabulary||'')+' '+JSON.stringify(d.objective||'')).toLowerCase()}
- function render(){path.innerHTML='';const q=(search.value||'').trim().toLowerCase();const filtered=lessons.filter(x=>!q||searchable(x).includes(q));count.textContent=q?`검색 결과 ${filtered.length}개`:`전체 ${lessons.length.toLocaleString()}일 · 10단계`;
+ function render(){try{completed=JSON.parse(localStorage.getItem('japanese-study-completed-days')||'[]')}catch(e){completed=[]}path.innerHTML='';const q=(search.value||'').trim().toLowerCase();const filtered=lessons.filter(x=>!q||searchable(x).includes(q));count.textContent=q?`검색 결과 ${filtered.length}개`:`전체 ${lessons.length.toLocaleString()}일 · 10단계`;
   const groups=Array.from({length:10},(_,i)=>({stage:i+1,items:filtered.filter(x=>x.stage===i+1)})).filter(g=>g.items.length);
   if(!groups.length){path.innerHTML='<p class="muted">검색 결과가 없습니다.</p>';return}
   groups.forEach(g=>{const all=lessons.filter(x=>x.stage===g.stage),done=all.filter(x=>completed.includes(x.day)).length,pct=all.length?Math.round(done/all.length*100):0;const card=document.createElement('section');card.className='stage-card'+((q||openedStage===g.stage)?' open':'');
@@ -153,7 +176,7 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
   });
  }
  document.getElementById('toggleSearch').addEventListener('click',()=>{searchWrap.classList.toggle('open');if(searchWrap.classList.contains('open'))search.focus();else{search.value='';render()}});
- document.getElementById('collapseStages').addEventListener('click',()=>{openedStage=0;search.value='';render()});search.addEventListener('input',render);render();
+ document.getElementById('collapseStages').addEventListener('click',()=>{openedStage=0;search.value='';render()});search.addEventListener('input',render);render();document.addEventListener('jp-study-data-updated',render);
 })();
 </script>
 
@@ -168,7 +191,7 @@ a.card:hover{border-color:#a5bdf6;transform:translateY(-1px)}.card-main{min-widt
   <div class="privacy-note">주의: 브라우저에 저장한 API 키와 토큰은 이 기기의 브라우저 데이터에 접근할 수 있는 사람이나 악성 스크립트에 노출될 수 있습니다. 공용 기기에서는 사용하지 마세요. Secret Gist도 완전한 비밀 저장소는 아닙니다. Gemini 무료 등급의 데이터 처리 조건도 확인하고 민감한 개인정보는 입력하지 마세요.</div>
  </div>
 </div>
-<script src="app.js"></script><script src="tts.js"></script>
+<script src="app.js"></script><script src="sync.js"></script><script src="tts.js"></script>
 
 </body>
 </html>

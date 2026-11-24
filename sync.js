@@ -1,0 +1,21 @@
+/* JAPANESE FLUENCY 1000 · Cross-device Gist sync
+   API keys/tokens remain local to each browser. Only study progress is synced. */
+(function(){
+ 'use strict';
+ const COMPLETE='japanese-study-completed-days', EXTRA='jp1000_learning_data', FILE='japanese-study-backup.json';
+ let busy=false, suppress=false, timer=null, lastRemote='';
+ const read=k=>{try{return localStorage.getItem(k)||''}catch(e){return ''}};
+ const settings=()=>({token:read('jp1000_github_token'),gist:read('jp1000_gist_id')});
+ function localData(){let days=[],extra={};try{days=JSON.parse(read(COMPLETE)||'[]')}catch(e){}try{extra=JSON.parse(read(EXTRA)||'{}')}catch(e){}return {schema:2,updatedAt:new Date().toISOString(),completedDays:[...new Set((Array.isArray(days)?days:[]).map(Number).filter(n=>n>=1&&n<=1000))].sort((a,b)=>a-b),extra:extra&&typeof extra==='object'?extra:{}}}
+ async function request(method,body){const s=settings();if(!s.token||!s.gist)throw new Error('이 기기에도 GitHub 토큰과 Gist ID를 설정해 주세요.');const r=await fetch('https://api.github.com/gists/'+encodeURIComponent(s.gist),{method,headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+s.token,'X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});const j=await r.json();if(!r.ok)throw new Error(j.message||'Gist 연결 오류 '+r.status);return j}
+ function merge(remote,local){const days=[...new Set([...(remote?.completedDays||[]),...(local?.completedDays||[])].map(Number).filter(n=>n>=1&&n<=1000))].sort((a,b)=>a-b);const re=Date.parse(remote?.updatedAt||0)||0,le=Date.parse(local?.updatedAt||0)||0;const extra=re>le?(remote?.extra||{}):(local?.extra||{});const sameDays=JSON.stringify(days)===JSON.stringify([...(remote?.completedDays||[])].map(Number).sort((a,b)=>a-b));const sameExtra=JSON.stringify(extra||{})===JSON.stringify(remote?.extra||{});return {schema:2,updatedAt:(sameDays&&sameExtra&&remote?.updatedAt)?remote.updatedAt:new Date().toISOString(),completedDays:days,extra};}
+ function apply(d){suppress=true;try{localStorage.setItem(COMPLETE,JSON.stringify(d.completedDays||[]));localStorage.setItem(EXTRA,JSON.stringify(d.extra||{}));}finally{suppress=false}document.dispatchEvent(new CustomEvent('jp-study-data-updated'));}
+ async function pullMergePush(){if(busy)return;const s=settings();if(!s.token||!s.gist)return;busy=true;try{const g=await request('GET');const f=g.files?.[FILE];let remote={completedDays:[],extra:{},updatedAt:''};if(f?.content){try{remote=JSON.parse(f.content)}catch(e){throw new Error('Gist 백업 파일의 JSON을 읽지 못했습니다.')}}const merged=merge(remote,localData());apply(merged);const content=JSON.stringify(merged,null,2);if(content!==f?.content){await request('PATCH',{files:{[FILE]:{content}}})}lastRemote=content;document.dispatchEvent(new CustomEvent('jp-sync-status',{detail:'아이폰·아이패드 동기화 완료'}));return merged}catch(e){document.dispatchEvent(new CustomEvent('jp-sync-status',{detail:'동기화 대기: '+e.message}));throw e}finally{busy=false}}
+ function schedule(){if(suppress)return;clearTimeout(timer);timer=setTimeout(()=>pullMergePush().catch(()=>{}),1600)}
+ // Catch study-data writes from the home page and all DAY lesson pages.
+ const originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){originalSet.call(this,k,v);if(k===COMPLETE||k===EXTRA)schedule()};
+ window.JPStudySync={sync:pullMergePush,backup:async()=>{const d=localData();await request('PATCH',{files:{[FILE]:{content:JSON.stringify(d,null,2)}}});lastRemote=JSON.stringify(d);document.dispatchEvent(new CustomEvent('jp-sync-status',{detail:'Gist 백업 완료'}));return d},restore:async()=>{const g=await request('GET');const f=g.files?.[FILE];if(!f?.content)throw new Error('Gist 백업 파일이 없습니다.');const d=JSON.parse(f.content);apply(merge(d,{completedDays:[],extra:{},updatedAt:''}));document.dispatchEvent(new CustomEvent('jp-sync-status',{detail:'Gist에서 진도를 불러왔습니다.'}));return d}};
+ window.addEventListener('focus',()=>pullMergePush().catch(()=>{}));window.addEventListener('online',()=>pullMergePush().catch(()=>{}));document.addEventListener('visibilitychange',()=>{if(!document.hidden)pullMergePush().catch(()=>{})});
+ // Initial sync on every device/page load, so a change on iPhone appears on iPad.
+ if(settings().token&&settings().gist)setTimeout(()=>pullMergePush().catch(()=>{}),500);
+})();
