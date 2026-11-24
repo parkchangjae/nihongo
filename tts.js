@@ -1,91 +1,32 @@
-/* JAPANESE FLUENCY 1000 · Gemini TTS
-   Uses the existing Gemini API key stored by app.js. No key is written to files or Gist. */
+/* JAPANESE FLUENCY 1000 · Dual TTS + persistent IndexedDB cache
+   Gemini TTS and Google Cloud Chirp 3 HD. Credentials stay in this browser only. */
 (function(){
   'use strict';
-  const API_KEY_NAME='jp1000_gemini_key';
-  const MODEL='gemini-3.8-flash-lite-tts';
-  const VOICE='Charon'; // calm, informative masculine voice preset
+  const GEMINI_KEY='jp1000_gemini_key', CLOUD_KEY='jp1000_cloud_tts_key', ENGINE_KEY='jp1000_tts_engine';
+  const GEMINI_MODEL='gemini-3.8-flash-lite-tts', GEMINI_VOICE='Charon';
+  const CHIRP_VOICE='ja-JP-Chirp3-HD-Charon';
   const STYLE='Speak in natural standard Japanese (Tokyo Japanese). Use a calm, clear adult male voice, like a friendly Japanese man speaking in an everyday conversation. Normal conversational speed, natural pauses, no exaggerated anime acting, no announcer delivery. Pronounce the Japanese transcript accurately.';
-  const cache=new Map();
-  let activeSource=null, activeContext=null, activeButton=null;
+  const DB_NAME='jp1000-tts-cache', STORE='audio';
+  let dbPromise=null, activeSource=null, activeAudio=null, activeButton=null, activeContext=null;
+  const inFlight=new Map();
   const clean=s=>(s||'').replace(/\s+/g,' ').trim();
-  function getKey(){try{return localStorage.getItem(API_KEY_NAME)||''}catch(e){return ''}}
-  function japaneseText(el){
-    const clone=el.cloneNode(true);
-    clone.querySelectorAll('.gemini-tts-button,button,script,style').forEach(x=>x.remove());
-    clone.querySelectorAll('ruby').forEach(r=>{const rt=r.querySelector('rt');const spoken=rt?rt.textContent:r.textContent;r.replaceWith(document.createTextNode(spoken));});
-    return clean(clone.textContent);
-  }
-  function setButtonState(btn,state){
-    if(!btn)return;
-    btn.dataset.state=state;
-    btn.textContent=state==='loading'?'생성 중…':state==='playing'?'■ 정지':'🔊 듣기';
-    btn.setAttribute('aria-label',state==='playing'?'음성 정지':'Gemini 일본어 음성 듣기');
-  }
-  function stop(){
-    if(activeSource){try{activeSource.stop()}catch(e){} activeSource=null;}
-    if(activeButton){setButtonState(activeButton,'idle');activeButton=null;}
-  }
-  async function playText(text,button){
-    text=clean(text);
-    if(!text){alert('재생할 일본어 문장을 찾지 못했습니다.');return}
-    if(button&&button.dataset.state==='playing'){stop();return}
-    stop();
-    const key=getKey();
-    if(!key){alert('홈페이지 설정에서 Gemini API Key를 먼저 저장해 주세요.');return}
-    setButtonState(button,'loading');activeButton=button;
-    try{
-      const AudioCtx=window.AudioContext||window.webkitAudioContext;
-      if(!AudioCtx)throw new Error('이 브라우저는 오디오 재생을 지원하지 않습니다.');
-      if(!activeContext)activeContext=new AudioCtx();
-      await activeContext.resume();
-      let buffer=cache.get(text);
-      if(!buffer){
-        const endpoint='https://generativelanguage.googleapis.com/v1beta/models/'+MODEL+':generateContent?key='+encodeURIComponent(key);
-        const body={contents:[{role:'user',parts:[{text:STYLE+'\n\nTranscript:\n'+text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:VOICE}}}}};
-        const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-        const data=await response.json();
-        if(!response.ok)throw new Error(data.error?.message||('Gemini TTS 오류 '+response.status));
-        const part=(data.candidates?.[0]?.content?.parts||[]).find(p=>p.inlineData?.data);
-        if(!part)throw new Error('Gemini가 음성 데이터를 반환하지 않았습니다. TTS 모델 사용 가능 여부와 API 할당량을 확인해 주세요.');
-        const binary=atob(part.inlineData.data),bytes=new Uint8Array(binary.length);
-        for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
-        buffer=await activeContext.decodeAudioData(bytes.buffer);
-        if(cache.size>=30)cache.delete(cache.keys().next().value);
-        cache.set(text,buffer);
-      }
-      const source=activeContext.createBufferSource();source.buffer=buffer;source.connect(activeContext.destination);activeSource=source;
-      source.onended=()=>{if(activeSource===source){activeSource=null;if(activeButton){setButtonState(activeButton,'idle');activeButton=null;}}};
-      setButtonState(button,'playing');source.start(0);
-    }catch(error){setButtonState(button,'idle');activeButton=null;alert('Gemini 음성 생성 실패\n'+error.message);}
-  }
-  function addButton(target,text){
-    if(target.querySelector(':scope > .gemini-tts-button'))return;
-    const btn=document.createElement('button');btn.type='button';btn.className='gemini-tts-button';btn.textContent='🔊 듣기';btn.dataset.state='idle';
-    btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();playText(text,btn)});
-    target.appendChild(btn);
-  }
-  function decorate(){
-    document.querySelectorAll('.jp').forEach(el=>{
-      const text=japaneseText(el);if(text)addButton(el,text);
-    });
-    document.querySelectorAll('.word b').forEach(el=>{
-      const text=japaneseText(el);if(text)addButton(el.parentElement,text);
-    });
-    // Japanese dialogue and Japanese-only text lines on the newer generated lesson template.
-    document.querySelectorAll('#dialogue').forEach(el=>{
-      const lines=(el.textContent||'').split('\n').map(x=>x.replace(/^[^:：]{1,12}[:：]\s*/,'' )).filter(Boolean);
-      if(lines.length){const btn=document.createElement('button');btn.type='button';btn.className='gemini-tts-button dialogue-tts';btn.textContent='🔊 회화 듣기';btn.addEventListener('click',()=>playText(lines.join('\n'),btn));el.insertAdjacentElement('afterend',btn);}
-    });
-  }
-  // Existing DAY 01–04 inline say(...) buttons now use Gemini instead of browser TTS.
-  window.say=function(text){playText(text,null)};
-  window.geminiSpeak=(text,button)=>playText(text,button);
-  document.addEventListener('DOMContentLoaded',decorate);
-  if(document.readyState!=='loading')decorate();
-  const test=document.getElementById('testTTS');
-  if(test)test.addEventListener('click',async()=>{
-    const key=getKey();if(!key){alert('Gemini API Key를 먼저 저장해 주세요.');return;}
-    await playText('こんにちは。今日はいい天気ですね。',test);
-  });
+  const read=k=>{try{return localStorage.getItem(k)||''}catch(e){return ''}};
+  function engine(){return read(ENGINE_KEY)||'gemini'}
+  function db(){if(dbPromise)return dbPromise;dbPromise=new Promise((resolve,reject)=>{if(!('indexedDB'in window)){reject(new Error('이 브라우저는 음성 영구 저장을 지원하지 않습니다.'));return}const req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains(STORE))d.createObjectStore(STORE,{keyPath:'key'})};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});return dbPromise}
+  async function cacheGet(key){try{const d=await db();return await new Promise((resolve,reject)=>{const r=d.transaction(STORE,'readonly').objectStore(STORE).get(key);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error)})}catch(e){return null}}
+  async function cachePut(item){try{const d=await db();await new Promise((resolve,reject)=>{const tx=d.transaction(STORE,'readwrite');tx.objectStore(STORE).put(item);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}catch(e){console.warn('TTS cache write failed',e)}}
+  function japaneseText(el){const clone=el.cloneNode(true);clone.querySelectorAll('.gemini-tts-button,button,script,style').forEach(x=>x.remove());clone.querySelectorAll('ruby').forEach(r=>{const rt=r.querySelector('rt');r.replaceWith(document.createTextNode(rt?rt.textContent:r.textContent))});return clean(clone.textContent)}
+  function setButtonState(btn,state){if(!btn)return;btn.dataset.state=state;btn.textContent=state==='loading'?'생성 중…':state==='playing'?'■ 정지':'🔊 듣기';btn.setAttribute('aria-label',state==='playing'?'음성 정지':'일본어 음성 듣기')}
+  function stop(){if(activeSource){try{activeSource.stop()}catch(e){}activeSource=null}if(activeAudio){try{activeAudio.pause();activeAudio.currentTime=0}catch(e){}activeAudio=null}if(activeButton){setButtonState(activeButton,'idle');activeButton=null}}
+  async function generateGemini(text){const key=read(GEMINI_KEY);if(!key)throw new Error('홈페이지 설정에서 Gemini API Key를 먼저 저장해 주세요.');const endpoint='https://generativelanguage.googleapis.com/v1beta/models/'+GEMINI_MODEL+':generateContent?key='+encodeURIComponent(key);const body={contents:[{role:'user',parts:[{text:STYLE+'\n\nTranscript:\n'+text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:GEMINI_VOICE}}}}};const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const data=await res.json();if(!res.ok)throw new Error(data.error?.message||('Gemini TTS 오류 '+res.status));const part=(data.candidates?.[0]?.content?.parts||[]).find(p=>p.inlineData?.data);if(!part)throw new Error('Gemini가 음성 데이터를 반환하지 않았습니다.');return {kind:'gemini',mime:part.inlineData.mimeType||'audio/pcm',data:part.inlineData.data}}
+  async function generateChirp(text){const key=read(CLOUD_KEY);if(!key)throw new Error('설정에서 Google Cloud TTS API Key를 입력해 주세요.');const body={input:{text},voice:{languageCode:'ja-JP',name:CHIRP_VOICE},audioConfig:{audioEncoding:'MP3',speakingRate:0.96}};const res=await fetch('https://texttospeech.googleapis.com/v1/text:synthesize?key='+encodeURIComponent(key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const data=await res.json();if(!res.ok)throw new Error(data.error?.message||('Google Cloud TTS 오류 '+res.status));if(!data.audioContent)throw new Error('Chirp 3 HD 음성 데이터가 반환되지 않았습니다.');return {kind:'mp3',mime:'audio/mpeg',data:data.audioContent}}
+  async function getAudio(text,which){const voice=which==='chirp'?CHIRP_VOICE:GEMINI_VOICE;const key=which+'|'+voice+'|'+text;const saved=await cacheGet(key);if(saved)return saved;if(inFlight.has(key))return inFlight.get(key);const task=(which==='chirp'?generateChirp(text):generateGemini(text)).then(async item=>{item.key=key;item.createdAt=Date.now();await cachePut(item);return item}).finally(()=>inFlight.delete(key));inFlight.set(key,task);return task}
+  function base64Bytes(b64){const bin=atob(b64),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return bytes}
+  async function playItem(item,button){if(item.kind==='mp3'){const bytes=base64Bytes(item.data);const url=URL.createObjectURL(new Blob([bytes],{type:item.mime||'audio/mpeg'}));const audio=new Audio(url);activeAudio=audio;audio.onended=()=>{URL.revokeObjectURL(url);if(activeAudio===audio){activeAudio=null;if(activeButton){setButtonState(activeButton,'idle');activeButton=null}}};audio.onerror=()=>{URL.revokeObjectURL(url);throw new Error('Chirp 음성을 재생하지 못했습니다.')};await audio.play();return}
+    const bytes=base64Bytes(item.data);const AudioCtx=window.AudioContext||window.webkitAudioContext;if(!AudioCtx)throw new Error('이 브라우저는 오디오 재생을 지원하지 않습니다.');if(!activeContext)activeContext=new AudioCtx();await activeContext.resume();const buffer=await activeContext.decodeAudioData(bytes.buffer.slice(0));const source=activeContext.createBufferSource();source.buffer=buffer;source.connect(activeContext.destination);activeSource=source;source.onended=()=>{if(activeSource===source){activeSource=null;if(activeButton){setButtonState(activeButton,'idle');activeButton=null}}};source.start(0)}
+  async function playText(text,button){text=clean(text);if(!text){alert('재생할 일본어 문장을 찾지 못했습니다.');return}if(button&&button.dataset.state==='playing'){stop();return}stop();const which=engine();setButtonState(button,'loading');activeButton=button;try{const item=await getAudio(text,which);setButtonState(button,'playing');await playItem(item,button)}catch(error){setButtonState(button,'idle');activeButton=null;alert((which==='chirp'?'Chirp 3 HD':'Gemini')+' 음성 생성 실패\n'+error.message)}}
+  function addButton(target,text){if(target.querySelector(':scope > .gemini-tts-button'))return;const btn=document.createElement('button');btn.type='button';btn.className='gemini-tts-button';btn.textContent='🔊 듣기';btn.dataset.state='idle';btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();playText(text,btn)});target.appendChild(btn)}
+  function decorate(){document.querySelectorAll('.jp').forEach(el=>{const text=japaneseText(el);if(text)addButton(el,text)});document.querySelectorAll('.word b').forEach(el=>{const text=japaneseText(el);if(text)addButton(el.parentElement,text)});document.querySelectorAll('#dialogue').forEach(el=>{if(el.dataset.ttsDecorated)return;el.dataset.ttsDecorated='1';const lines=(el.textContent||'').split('\n').map(x=>x.replace(/^[^:：]{1,12}[:：]\s*/,'' )).filter(Boolean);if(lines.length){const btn=document.createElement('button');btn.type='button';btn.className='gemini-tts-button dialogue-tts';btn.textContent='🔊 회화 듣기';btn.addEventListener('click',()=>playText(lines.join('\n'),btn));el.insertAdjacentElement('afterend',btn)}})}
+  window.say=function(text){playText(text,null)};window.geminiSpeak=(text,button)=>playText(text,button);window.jp1000TTS={play:playText,clearCache:async()=>{const d=await db();await new Promise((resolve,reject)=>{const tx=d.transaction(STORE,'readwrite');tx.objectStore(STORE).clear();tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}};
+  document.addEventListener('DOMContentLoaded',decorate);if(document.readyState!=='loading')decorate();const test=document.getElementById('testTTS');if(test)test.addEventListener('click',()=>playText('こんにちは。今日はいい天気ですね。',test));
 })();
