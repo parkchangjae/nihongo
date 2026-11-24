@@ -43,6 +43,8 @@ button.ghost{background:transparent;color:var(--accent);border:1px solid #bfdbfe
 .num{background:#f7f8fa;border:1px solid var(--line);border-radius:8px;padding:9px 10px}
 .num .jp{font-size:19px}.num small{color:var(--muted);font-size:13px}
 @media(max-width:420px){body{font-size:17px}.number-grid{grid-template-columns:1fr 1fr}.jp{font-size:20px}}
+
+.gemini-tts-button{display:inline-flex;align-items:center;justify-content:center;gap:5px;margin:6px 0 2px 7px;padding:7px 11px;min-height:34px;border:1px solid #d7e1ee;border-radius:999px;background:#f1f6fc;color:#23466f;font:600 13px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.gemini-tts-button[data-state="loading"]{opacity:.65}.gemini-tts-button[data-state="playing"]{background:#e7eef8;color:#173d72;border-color:#a9bfdc}.dialogue-tts{margin:8px 0 0}
 </style>
 </head>
 <body>
@@ -257,5 +259,5 @@ function grade(){
 })();
 </script>
 
-</body>
+<script src="tts.js"></script></body>
 </html>

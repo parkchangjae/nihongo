@@ -46,6 +46,8 @@ button.ghost{background:transparent;color:var(--accent);border:1px solid #bfdbfe
 .progress-control button.done{background:var(--green)}
 .footer{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);line-height:1.55}
 @media(max-width:440px){body{font-size:17px}.jp{font-size:20px}.two-col{grid-template-columns:1fr}.turn{grid-template-columns:32px 1fr auto}}
+
+.gemini-tts-button{display:inline-flex;align-items:center;justify-content:center;gap:5px;margin:6px 0 2px 7px;padding:7px 11px;min-height:34px;border:1px solid #d7e1ee;border-radius:999px;background:#f1f6fc;color:#23466f;font:600 13px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.gemini-tts-button[data-state="loading"]{opacity:.65}.gemini-tts-button[data-state="playing"]{background:#e7eef8;color:#173d72;border-color:#a9bfdc}.dialogue-tts{margin:8px 0 0}
 </style>
 </head>
 <body>
@@ -253,5 +255,5 @@ function grade(){
   paint();
 })();
 </script>
-</body>
+<script src="tts.js"></script></body>
 </html>
